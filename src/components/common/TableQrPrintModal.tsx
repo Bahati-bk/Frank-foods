@@ -21,6 +21,7 @@ export const TableQrPrintModal: React.FC<Props> = ({
 }) => {
   const [qrDataUrls, setQrDataUrls] = useState<Record<string, string>>({});
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
 
   // Generate real QR code image data URLs
   useEffect(() => {
@@ -28,16 +29,26 @@ export const TableQrPrintModal: React.FC<Props> = ({
 
     let mounted = true;
     setIsGenerating(true);
+    setGenerationError(null);
 
     const generateQrs = async () => {
       const targets = table ? [table] : allTables;
       const results: Record<string, string> = {};
+      const missingTokenTables: string[] = [];
 
       for (const t of targets) {
         try {
           const origin = window.location.origin;
-          const token = t.qrCodeToken || (t.path.includes('token=') ? t.path.split('token=')[1] : 'qr_ff_table_07_live');
-          const fullScanUrl = `${origin}/menu?table_token=${token}`;
+          const token =
+            t.qrCodeToken ||
+            new URL(t.path, origin).searchParams.get('token') ||
+            new URL(t.path, origin).searchParams.get('table_token');
+          if (!token) {
+            missingTokenTables.push(t.label);
+            continue;
+          }
+
+          const fullScanUrl = `${origin}/menu?table_token=${encodeURIComponent(token)}`;
           const dataUrl = await QRCode.toDataURL(fullScanUrl, {
             width: 320,
             margin: 2,
@@ -50,11 +61,17 @@ export const TableQrPrintModal: React.FC<Props> = ({
           results[t.id] = dataUrl;
         } catch (err) {
           console.error(`Failed to generate QR code for ${t.label}:`, err);
+          missingTokenTables.push(t.label);
         }
       }
 
       if (mounted) {
         setQrDataUrls(results);
+        if (missingTokenTables.length > 0) {
+          setGenerationError(
+            `Could not generate valid QR codes for ${missingTokenTables.join(', ')}. Refresh the table list and try again.`
+          );
+        }
         setIsGenerating(false);
       }
     };
@@ -71,6 +88,7 @@ export const TableQrPrintModal: React.FC<Props> = ({
   const tablesToPrint = table ? [table] : allTables;
 
   const handlePrint = () => {
+    if (isGenerating || generationError || tablesToPrint.some((tbl) => !qrDataUrls[tbl.id])) return;
     window.print();
   };
 
@@ -90,8 +108,8 @@ export const TableQrPrintModal: React.FC<Props> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              disabled={isGenerating}
-              className="px-4 py-2 bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
+              disabled={isGenerating || Boolean(generationError) || tablesToPrint.some((tbl) => !qrDataUrls[tbl.id])}
+              className="px-4 py-2 bg-[#F97316] hover:bg-[#EA580C] disabled:bg-neutral-400 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
             >
               <span className="material-symbols-outlined text-[16px]">print</span>
               <span>Send to Printer / Save PDF</span>
@@ -115,12 +133,21 @@ export const TableQrPrintModal: React.FC<Props> = ({
           </div>
         )}
 
+        {generationError && (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-700">
+            {generationError}
+          </div>
+        )}
+
         {/* Printable Stand Cards Container */}
         <div className="flex-1 overflow-y-auto pr-1">
           <div className={`grid gap-6 ${isBulk ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-1 max-w-sm mx-auto'}`}>
             {tablesToPrint.map((tbl) => {
               const qrUrl = qrDataUrls[tbl.id];
-              const token = tbl.qrCodeToken || (tbl.path.includes('token=') ? tbl.path.split('token=')[1] : 'token');
+              const token =
+                tbl.qrCodeToken ||
+                new URL(tbl.path, window.location.origin).searchParams.get('token') ||
+                new URL(tbl.path, window.location.origin).searchParams.get('table_token');
 
               return (
                 <div
@@ -165,6 +192,9 @@ export const TableQrPrintModal: React.FC<Props> = ({
                   {/* Instructions */}
                   <p className="text-xs font-bold text-neutral-800 leading-snug mt-1">
                     Scan with Phone Camera to Order
+                  </p>
+                  <p className="text-[9px] text-neutral-400 mt-1 font-mono break-all">
+                    {token ? `${window.location.origin}/menu?table_token=${encodeURIComponent(token)}` : 'No active table QR token loaded'}
                   </p>
                   <p className="text-[10px] text-neutral-500 mt-0.5">
                     No app download required • Pay at table
