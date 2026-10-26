@@ -390,6 +390,14 @@ export default function App() {
     if (cartItems.length === 0) {
       throw new Error('Your cart is empty.');
     }
+    const hasInvalidMenuItemId = cartItems.some((item) =>
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(item.dishId)
+    );
+    if (hasInvalidMenuItemId) {
+      throw new Error(
+        'Your cart contains items from an older menu. Clear the cart, refresh the menu, and add the items again.'
+      );
+    }
 
     setIsSubmittingOrder(true);
     setErrorMessage(null);

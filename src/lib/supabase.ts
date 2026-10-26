@@ -73,9 +73,8 @@ export interface DbMenuItem {
   description: string;
   price: number;
   image_url?: string;
-  prep_time_minutes: number;
+  preparation_time_minutes: number;
   is_available: boolean;
-  is_chef_choice: boolean;
   display_order: number;
   created_at: string;
 }

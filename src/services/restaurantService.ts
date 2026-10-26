@@ -246,9 +246,8 @@ export const restaurantService = {
           description,
           price,
           image_url,
-          prep_time_minutes,
+          preparation_time_minutes,
           is_available,
-          is_chef_choice,
           category:menu_categories(name)
         `)
         .eq('restaurant_id', tenantId)
@@ -260,9 +259,8 @@ export const restaurantService = {
         name: item.name,
         category: (item.category?.name || 'Burgers') as any,
         priceUGX: Number(item.price),
-        prepTimeText: `${item.prep_time_minutes || 15} MIN PREP`,
+        prepTimeText: `${item.preparation_time_minutes || 15} MIN PREP`,
         description: item.description,
-        chefChoice: item.is_chef_choice,
         image: item.image_url || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
         stockStatus: item.is_available ? 'available' : 'sold_out',
         pauseReason: item.is_available ? undefined : 'Paused by shift manager',

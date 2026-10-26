@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION public.create_guest_order(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = extensions, pg_catalog
 AS $$
 DECLARE
     v_restaurant_id UUID;
