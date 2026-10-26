@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   INITIAL_DISHES,
   INITIAL_ORDERS,
@@ -48,6 +48,8 @@ export default function App() {
   const [activeTenantId, setActiveTenantId] = useState<TenantId>(
     () => (authService.getCurrentUser()?.restaurantId as TenantId | undefined) || TENANTS.FRANK_FOODS.id
   );
+  const activeTenantIdRef = useRef(activeTenantId);
+  activeTenantIdRef.current = activeTenantId;
   const [dishes, setDishes] = useState<Dish[]>(INITIAL_DISHES);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
@@ -67,6 +69,12 @@ export default function App() {
   // Cart & Customizer State
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('table_token') || params.has('token')) {
+        localStorage.removeItem(CART_STORAGE_KEY);
+        return [];
+      }
+
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       return saved ? JSON.parse(saved) : [];
     } catch {
@@ -133,6 +141,18 @@ export default function App() {
     const tableToken = params.get('table_token') || params.get('token');
     const restaurantSlug = params.get('restaurant');
 
+    if (tableToken) {
+      setCartItems([]);
+      setCustomizingDish(null);
+      setDishes([]);
+      setCategories([]);
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch (err) {
+        console.warn('Failed to clear saved cart after scanning a table QR code:', err);
+      }
+    }
+
     if (restaurantSlug === 'demo-bistro') {
       setActiveTenantId(TENANTS.DEMO_BISTRO.id);
     } else if (restaurantSlug === 'frank-foods') {
@@ -167,6 +187,8 @@ export default function App() {
         restaurantService.getShiftPerformance(activeTenantId),
       ]);
 
+      if (activeTenantIdRef.current !== activeTenantId) return;
+
       if (tenantDishes.length > 0) setDishes(tenantDishes);
       if (tenantCategories.length > 0) setCategories(tenantCategories);
       if (tenantStaff.length > 0) setStaff(tenantStaff);
@@ -186,6 +208,9 @@ export default function App() {
       setManagerBranch(currentTenant.branch);
     } catch (err: any) {
       console.error('Failed to load tenant data:', err);
+      if (activeTenantIdRef.current === activeTenantId) {
+        setErrorMessage(`Failed to refresh restaurant data: ${err.message || 'Please check your connection and retry.'}`);
+      }
     }
   }, [activeTenantId, selectedTable, currentTenant.branch]);
 
