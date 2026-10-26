@@ -34,62 +34,6 @@ import { DatabaseManagerModal } from './components/common/DatabaseManagerModal';
 import { restaurantService, TENANTS, TenantId } from './services/restaurantService';
 import { authService } from './services/authService';
 import { pathToScreen, pushAppRoute, ScreenId } from './utils/router';
-import { isSupabaseConfigured } from './lib/supabase';
-
-interface ScreenNavOption {
-  id: ScreenId;
-  label: string;
-  badge?: string;
-  icon: string;
-  description: string;
-}
-
-const SCREENS: ScreenNavOption[] = [
-  {
-    id: 'menu-feed',
-    label: '1. Menu & Order',
-    icon: 'restaurant_menu',
-    description: 'Customer digital menu with QR table resolution (/menu)',
-  },
-  {
-    id: 'customer-cart',
-    label: '2. Cart & Review',
-    icon: 'lunch_dining',
-    description: 'Customizer, notes & dine-in checkout (/cart)',
-  },
-  {
-    id: 'customer-tracker',
-    label: '3. Order Tracker',
-    icon: 'receipt_long',
-    description: 'Real-time kitchen progress & call server (/orders)',
-  },
-  {
-    id: 'kitchen',
-    label: '4. Kitchen KDS',
-    icon: 'soup_kitchen',
-    badge: 'Live KDS',
-    description: 'Tablet display for incoming orders & prep timers (/kitchen)',
-  },
-  {
-    id: 'staff-dashboard',
-    label: '5. Staff & Billing',
-    icon: 'splitscreen',
-    description: 'Floor staff hub & bill settlement via Card/Cash/MoMo (/staff)',
-  },
-  {
-    id: 'manager-dashboard',
-    label: '6. Manager Admin',
-    icon: 'dashboard',
-    badge: 'Hub',
-    description: 'Catalog management, table QR stands & real sales (/manager)',
-  },
-  {
-    id: 'manager-login',
-    label: '7. Staff Login',
-    icon: 'lock',
-    description: 'Role-based station authentication (/login)',
-  },
-];
 
 const CART_STORAGE_KEY = 'frank_foods_cart_v3';
 const ACTIVE_ORDER_STORAGE_KEY = 'frank_foods_active_order_v3';
@@ -101,7 +45,9 @@ export default function App() {
     return route.screen;
   });
 
-  const [activeTenantId, setActiveTenantId] = useState<TenantId>(TENANTS.FRANK_FOODS.id);
+  const [activeTenantId, setActiveTenantId] = useState<TenantId>(
+    () => (authService.getCurrentUser()?.restaurantId as TenantId | undefined) || TENANTS.FRANK_FOODS.id
+  );
   const [dishes, setDishes] = useState<Dish[]>(INITIAL_DISHES);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
@@ -243,6 +189,21 @@ export default function App() {
   useEffect(() => {
     loadTenantData();
   }, [loadTenantData]);
+
+  const hasStaffRouteAccess =
+    (currentScreen !== 'kitchen' ||
+      (authService.canAccessKitchen(currentUser) && currentUser?.restaurantId === activeTenantId)) &&
+    (currentScreen !== 'manager-dashboard' ||
+      (authService.canAccessManager(currentUser) && currentUser?.restaurantId === activeTenantId)) &&
+    (currentScreen !== 'staff-dashboard' ||
+      (Boolean(currentUser) && currentUser?.restaurantId === activeTenantId));
+
+  useEffect(() => {
+    if (!hasStaffRouteAccess) {
+      setCurrentScreen('manager-login');
+      pushAppRoute('manager-login', undefined, false);
+    }
+  }, [currentScreen, hasStaffRouteAccess]);
 
   // Periodic polling for shared order updates (every 3 seconds for near real-time status reflection)
   useEffect(() => {
@@ -805,6 +766,8 @@ export default function App() {
     }
     if (user.role === 'kitchen') {
       handleNavigateScreen('kitchen');
+    } else if (user.role === 'staff') {
+      handleNavigateScreen('staff-dashboard');
     } else {
       handleNavigateScreen('manager-dashboard');
     }
@@ -821,114 +784,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] flex flex-col font-sans">
-      {/* Top Floating Screen Navigation & Multi-Tenant Switcher Bar */}
-      <nav
-        aria-label="Screen View Switcher"
-        className="sticky top-0 z-50 bg-[#171717] text-white border-b border-neutral-800 shadow-md px-3 py-2 print:hidden"
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          {/* Brand & Multi-Tenant Switcher */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="w-6 h-6 rounded-md bg-[#F97316] text-white font-extrabold flex items-center justify-center text-xs">
-              {currentTenant.name[0]}
-            </span>
-
-            {/* Tenant Selector */}
-            <div className="relative inline-flex items-center">
-              <select
-                aria-label="Select Restaurant Tenant"
-                value={activeTenantId}
-                onChange={(e) => setActiveTenantId(e.target.value as TenantId)}
-                className="bg-neutral-800 hover:bg-neutral-700 text-neutral-100 text-xs font-bold py-1 px-2.5 rounded-lg border border-neutral-700 focus:outline-none focus:ring-1 focus:ring-[#F97316] cursor-pointer"
-              >
-                <option value={TENANTS.FRANK_FOODS.id}>Frank Foods (Kampala)</option>
-                <option value={TENANTS.DEMO_BISTRO.id}>Demo Bistro (Kololo)</option>
-              </select>
-            </div>
-
-            {/* Supabase Status Indicator */}
-            <div className="hidden lg:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-neutral-900 border border-neutral-800 text-[10px]">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isSupabaseConfigured() ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'
-                }`}
-              />
-              <span className="text-neutral-300 font-mono">
-                {isSupabaseConfigured() ? 'Supabase Live' : 'Multi-Restaurant Engine'}
-              </span>
-            </div>
-          </div>
-
-          {/* Quick Screen Nav Buttons */}
-          <div className="flex items-center gap-1 overflow-x-auto py-0.5 no-scrollbar">
-            {SCREENS.map((screen) => {
-              const isActive = currentScreen === screen.id;
-              return (
-                <button
-                  key={screen.id}
-                  onClick={() => handleNavigateScreen(screen.id)}
-                  title={screen.description}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#F97316] text-white shadow-xs font-bold'
-                      : 'text-neutral-300 hover:text-white hover:bg-neutral-800'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[15px]">{screen.icon}</span>
-                  <span>{screen.label}</span>
-                  {screen.badge && (
-                    <span
-                      className={`text-[9px] px-1.5 py-0.2 rounded font-mono font-bold ${
-                        isActive ? 'bg-black/30 text-white' : 'bg-neutral-800 text-neutral-300'
-                      }`}
-                    >
-                      {screen.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right Controls: Staff user badge & DB Console */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Authenticated Staff Pill */}
-            {currentUser ? (
-              <div className="hidden md:flex items-center gap-2 bg-neutral-800 border border-neutral-700 px-2.5 py-1 rounded-lg text-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span className="font-bold text-neutral-200">{currentUser.fullName.split(' ')[0]}</span>
-                <span className="text-[10px] text-neutral-400 uppercase font-mono">({currentUser.role})</span>
-                <button
-                  onClick={handleSignOut}
-                  title="Sign out of staff session"
-                  className="text-neutral-400 hover:text-red-400 ml-1 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[14px]">logout</span>
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => handleNavigateScreen('manager-login')}
-                className="hidden md:flex items-center gap-1 text-xs text-neutral-300 hover:text-white px-2 py-1 rounded-lg hover:bg-neutral-800 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[15px]">login</span>
-                <span>Staff Sign In</span>
-              </button>
-            )}
-
-            {/* Database & Tables Engine Button */}
-            <button
-              onClick={() => setIsDbModalOpen(true)}
-              title="Open SQLite Database & PostgreSQL Automation Panel"
-              className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white border border-neutral-700 transition-colors shrink-0 text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
-            >
-              <span className="material-symbols-outlined text-[15px] text-[#F97316]">database</span>
-              <span className="hidden xl:inline font-bold text-[11px]">Database &amp; Tables</span>
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* Global Toast / Error Alert */}
       {errorMessage && (
         <div className="bg-red-500 text-white text-xs font-semibold px-4 py-2 flex items-center justify-between shadow-md print:hidden">
@@ -947,7 +802,27 @@ export default function App() {
 
       {/* Render Active Screen Component */}
       <main className="flex-1 w-full">
-        {currentScreen === 'menu-feed' && (
+        {import.meta.env.DEV && currentScreen === 'manager-dashboard' && hasStaffRouteAccess && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 flex justify-end print:hidden">
+            <button
+              onClick={() => setIsDbModalOpen(true)}
+              title="Open development database tools"
+              className="px-3 py-2 rounded-lg bg-neutral-900 text-white text-xs font-bold flex items-center gap-2 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px] text-[#F97316]">database</span>
+              <span>Database &amp; Tables</span>
+            </button>
+          </div>
+        )}
+
+        {(!hasStaffRouteAccess || currentScreen === 'manager-login') && (
+          <ManagerLoginScreen
+            onLoginSuccess={handleLoginSuccess}
+            onSelectScreen={(screen) => handleNavigateScreen(screen as ScreenId)}
+          />
+        )}
+
+        {hasStaffRouteAccess && currentScreen === 'menu-feed' && (
           <DineInMenuFeedScreen
             dishes={dishes}
             tableNumber={selectedTable}
@@ -972,7 +847,7 @@ export default function App() {
           />
         )}
 
-        {currentScreen === 'customer-cart' && (
+        {hasStaffRouteAccess && currentScreen === 'customer-cart' && (
           <DineInCustomerCartScreen
             dishes={dishes}
             cartItems={cartItems}
@@ -990,7 +865,7 @@ export default function App() {
           />
         )}
 
-        {currentScreen === 'customer-tracker' && (
+        {hasStaffRouteAccess && currentScreen === 'customer-tracker' && (
           <CustomerOrderTrackerScreen
             order={primaryOrder}
             onCallServer={handleCallServer}
@@ -998,12 +873,12 @@ export default function App() {
           />
         )}
 
-        {currentScreen === 'kitchen' && (
+        {hasStaffRouteAccess && currentScreen === 'kitchen' && (
           <KitchenKdsScreen
             orders={orders}
             onUpdateOrderStatus={handleUpdateOrderStatus}
             onRefreshOrders={loadTenantData}
-            onSelectScreen={(screen) => handleNavigateScreen(screen as ScreenId)}
+            onSelectScreen={authService.canAccessManager(currentUser) ? (screen) => handleNavigateScreen(screen as ScreenId) : undefined}
             onSignOut={handleSignOut}
             restaurantName={currentTenant.name}
             branchName={currentTenant.branch}
@@ -1011,7 +886,7 @@ export default function App() {
           />
         )}
 
-        {currentScreen === 'staff-dashboard' && (
+        {hasStaffRouteAccess && currentScreen === 'staff-dashboard' && (
           <StaffOrderDashboardScreen
             orders={orders}
             onConfirmPayment={handleConfirmPayment}
@@ -1021,14 +896,7 @@ export default function App() {
           />
         )}
 
-        {currentScreen === 'manager-login' && (
-          <ManagerLoginScreen
-            onLoginSuccess={handleLoginSuccess}
-            onSelectScreen={(screen) => handleNavigateScreen(screen as ScreenId)}
-          />
-        )}
-
-        {currentScreen === 'manager-dashboard' && (
+        {hasStaffRouteAccess && currentScreen === 'manager-dashboard' && (
           <ManagerAdminDashboardScreen
             dishes={dishes}
             tables={tables}
@@ -1055,11 +923,13 @@ export default function App() {
       </main>
 
       {/* Database & Tables Manager Modal (SQLite & PostgreSQL) */}
-      <DatabaseManagerModal
-        isOpen={isDbModalOpen}
-        onClose={() => setIsDbModalOpen(false)}
-        activeTenantId={activeTenantId}
-      />
+      {import.meta.env.DEV && (
+        <DatabaseManagerModal
+          isOpen={isDbModalOpen}
+          onClose={() => setIsDbModalOpen(false)}
+          activeTenantId={activeTenantId}
+        />
+      )}
     </div>
   );
 }
