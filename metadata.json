@@ -1,0 +1,6 @@
+{
+  "name": "Frank Foods - Digital Dining & Management",
+  "description": "Dine-in table QR ordering, real-time kitchen & floor staff order management, and manager portal for Frank Foods Kampala.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Order #FF-0842 • Frank Foods</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#F97316',
+              dark: '#EA580C',
+              light: '#FFF7ED',
+              subtle: '#FED7AA'
+            },
+            neutral: {
+              title: '#171717',
+              body: '#525252',
+              muted: '#737373',
+              border: '#E5E5E5',
+              bg: '#F9FAFB',
+              card: '#FFFFFF'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior-y: none;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-outlined.filled {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-neutral-bg font-sans text-neutral-title min-h-screen flex justify-center selection:bg-brand-light selection:text-brand-dark">
+<!-- Mobile Viewport Container (390px - 420px max width) -->
+<div class="w-full max-w-[420px] bg-neutral-card min-h-screen flex flex-col shadow-sm border-x border-neutral-border pb-10">
+<!-- Top Navigation Header -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-border px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<img alt="Frank Foods Brand Logo" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WsyMDsVuGPntJQq76IMoAHfEhGAxAkS8IEyj0hzmFMOqUJH2aqccoDVWURAYZhSMfgj3JvYHM9Z5NOFhsm1GwIGPY-rW_-jfrABoLnmsmjx4TkL0A0HWDk8O3uevOzzaI_SdSP5Y3Fy15sz8LRDi7qik_udKSMg4mw0jFo8paOtosjYupZYnjXi9Nj1r62mBRhaPwA0Y9Q_rDuOScAIwczfw8tWOmBnfQatMCCtGsTCtt6LFGgrzrxI0g"/>
+<span class="font-bold text-[17px] tracking-tight text-neutral-title">Frank Foods</span>
+</div>
+<!-- Dine-in badge -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-semibold">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        Table 07 • Dine-in
+      </div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 px-4 py-4 space-y-4">
+<!-- Order Identification Card -->
+<section class="bg-white rounded-2xl p-4 border border-neutral-border shadow-xs">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-semibold uppercase tracking-wider text-neutral-muted">Order Ticket</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                Action Required
+              </span>
+</div>
+<h1 class="text-2xl font-extrabold tracking-tight text-neutral-title">Order #FF-0842</h1>
+</div>
+<span class="p-2 rounded-xl bg-orange-50 text-brand">
+<span class="material-symbols-outlined text-[26px]">receipt_long</span>
+</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-neutral-border text-sm">
+<div class="flex flex-col">
+<span class="text-xs text-neutral-muted font-medium">Table Location</span>
+<span class="font-semibold text-neutral-title flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[16px] text-brand">table_restaurant</span>
+              Table 07 (Terrace)
+            </span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-neutral-muted font-medium">Time Placed</span>
+<span class="font-semibold text-neutral-title mt-0.5">1:42 PM</span>
+</div>
+</div>
+</section>
+<!-- 4 Core States Tracker -->
+<section class="bg-white rounded-2xl p-4 border border-neutral-border shadow-xs">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xs font-bold uppercase tracking-wider text-neutral-muted">Order Status</h2>
+<span class="text-xs font-medium text-brand-dark bg-brand-light px-2 py-0.5 rounded-md font-mono">Step 1 of 4</span>
+</div>
+<div class="relative pl-1">
+<!-- Continuous Vertical Tracker Line -->
+<div class="absolute left-[19px] top-4 bottom-4 w-0.5 bg-neutral-200"></div>
+<!-- Stage 1: Pending Payment (ACTIVE / HIGHLIGHTED) -->
+<div class="relative flex items-start gap-3.5 pb-5">
+<div class="relative z-10 w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white shadow-md ring-4 ring-orange-100">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+</div>
+<div class="flex-1 pt-0.5">
+<div class="flex items-center justify-between">
+<p class="font-bold text-sm text-neutral-title">1. Pending Payment</p>
+<span class="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Active</span>
+</div>
+<p class="text-xs text-brand-dark font-medium mt-0.5">Awaiting in-person verification</p>
+</div>
+</div>
+<!-- Stage 2: Preparing (UPCOMING) -->
+<div class="relative flex items-start gap-3.5 pb-5">
+<div class="relative z-10 w-9 h-9 rounded-full bg-neutral-100 border border-neutral-300 flex items-center justify-center text-neutral-400">
+<span class="material-symbols-outlined text-[18px]">skillet</span>
+</div>
+<div class="flex-1 pt-0.5">
+<p class="font-semibold text-sm text-neutral-400">2. Preparing</p>
+<p class="text-xs text-neutral-muted">Starts once payment is confirmed</p>
+</div>
+</div>
+<!-- Stage 3: Ready (UPCOMING) -->
+<div class="relative flex items-start gap-3.5 pb-5">
+<div class="relative z-10 w-9 h-9 rounded-full bg-neutral-100 border border-neutral-300 flex items-center justify-center text-neutral-400">
+<span class="material-symbols-outlined text-[18px]">restaurant</span>
+</div>
+<div class="flex-1 pt-0.5">
+<p class="font-semibold text-sm text-neutral-400">3. Ready</p>
+<p class="text-xs text-neutral-muted">Plating &amp; beverage preparation</p>
+</div>
+</div>
+<!-- Stage 4: Served (UPCOMING) -->
+<div class="relative flex items-start gap-3.5">
+<div class="relative z-10 w-9 h-9 rounded-full bg-neutral-100 border border-neutral-300 flex items-center justify-center text-neutral-400">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</div>
+<div class="flex-1 pt-0.5">
+<p class="font-semibold text-sm text-neutral-400">4. Served</p>
+<p class="text-xs text-neutral-muted">Brought to Table 07</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Prominent In-Person Payment Notice (CRITICAL) -->
+<section class="rounded-2xl p-4 bg-orange-50/90 border border-brand/30 shadow-xs">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">info</span>
+</div>
+<div class="space-y-1.5 flex-1">
+<h3 class="font-bold text-sm text-neutral-title leading-tight">Payment Pending Verification</h3>
+<p class="text-xs text-neutral-body leading-relaxed">
+              A staff member will arrive at <strong class="text-neutral-title font-semibold">Table 07</strong> shortly to verify and collect your payment (<strong class="text-neutral-title font-semibold">Cash</strong>, <strong class="text-neutral-title font-semibold">MTN MoMo</strong>, or <strong class="text-neutral-title font-semibold">Airtel Money</strong>). Your order will be sent to the kitchen once payment is verified.
+            </p>
+</div>
+</div>
+<!-- Call Server Action -->
+<div class="mt-3.5 pt-3 border-t border-brand/20 flex flex-col gap-2">
+<button class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-neutral-50 text-neutral-title border border-neutral-border font-semibold text-xs transition-all active:scale-[0.98] shadow-xs flex items-center justify-center gap-2" id="callServerBtn" onclick="triggerServerCall()">
+<span class="material-symbols-outlined text-brand text-[18px]">notifications_active</span>
+<span>Call Server to Table</span>
+</button>
+<div class="hidden text-center text-[11px] font-semibold text-emerald-700 bg-emerald-50 py-1.5 rounded-lg border border-emerald-200" id="callFeedback">
+            ✓ Server alerted for Table 07
+          </div>
+</div>
+</section>
+<!-- Order Summary Card -->
+<section class="bg-white rounded-2xl p-4 border border-neutral-border shadow-xs">
+<div class="flex items-center justify-between pb-3 border-b border-neutral-border">
+<h2 class="text-xs font-bold uppercase tracking-wider text-neutral-muted">Order Summary</h2>
+<span class="text-xs font-medium text-neutral-body">3 items</span>
+</div>
+<!-- Itemized List -->
+<div class="divide-y divide-neutral-100">
+<!-- Item 1: Burger -->
+<div class="py-3 flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-brand-light text-brand-dark font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                1x
+              </span>
+<div>
+<p class="text-sm font-semibold text-neutral-title leading-tight">Frank's Signature Smokehouse Burger</p>
+<p class="text-xs text-neutral-muted mt-0.5">Medium Well, Extra Smoked Cheddar</p>
+</div>
+</div>
+<span class="text-sm font-semibold text-neutral-title whitespace-nowrap">UGX 31,500</span>
+</div>
+<!-- Item 2: Chicken -->
+<div class="py-3 flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-brand-light text-brand-dark font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                1x
+              </span>
+<div>
+<p class="text-sm font-semibold text-neutral-title leading-tight">Kampala Flame-Grilled Chicken</p>
+<p class="text-xs text-neutral-muted mt-0.5">Half Chicken, Piri-Piri Lemon Herb</p>
+</div>
+</div>
+<span class="text-sm font-semibold text-neutral-title whitespace-nowrap">UGX 32,000</span>
+</div>
+<!-- Item 3: Beverage -->
+<div class="py-3 flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-brand-light text-brand-dark font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                2x
+              </span>
+<div>
+<p class="text-sm font-semibold text-neutral-title leading-tight">Passion &amp; Ginger Cooler</p>
+<p class="text-xs text-neutral-muted mt-0.5">500ml</p>
+</div>
+</div>
+<span class="text-sm font-semibold text-neutral-title whitespace-nowrap">UGX 17,000</span>
+</div>
+</div>
+<!-- Special Instructions Box -->
+<div class="mt-1 p-3 rounded-xl bg-neutral-bg border border-neutral-border flex items-start gap-2">
+<span class="material-symbols-outlined text-neutral-muted text-[17px] shrink-0 mt-0.5">chat</span>
+<div class="text-xs">
+<span class="font-semibold text-neutral-title">Special Instructions:</span>
+<p class="text-neutral-body mt-0.5 italic">“Please serve drinks first, extra napkins requested for table.”</p>
+</div>
+</div>
+<!-- Transparent Financial Totals -->
+<div class="mt-3.5 pt-3 border-t border-neutral-border space-y-2">
+<div class="flex justify-between items-center text-xs text-neutral-body">
+<span>Subtotal</span>
+<span class="font-medium text-neutral-title">UGX 80,500</span>
+</div>
+<div class="flex justify-between items-center text-xs text-neutral-body">
+<span>Taxes &amp; Levies</span>
+<span class="text-neutral-500 font-medium">Included in menu prices</span>
+</div>
+<div class="pt-2 border-t border-neutral-border flex items-baseline justify-between">
+<div>
+<p class="text-sm font-bold text-neutral-title">Total Payable</p>
+<p class="text-[11px] font-medium text-amber-700">Status: Pending Verification</p>
+</div>
+<p class="text-xl font-extrabold text-brand-dark tracking-tight">UGX 80,500</p>
+</div>
+</div>
+</section>
+<!-- Dining Utilities / Table Support -->
+<section class="bg-neutral-bg rounded-2xl p-3.5 border border-neutral-border flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-neutral-muted text-[18px]">wifi</span>
+<div>
+<p class="font-semibold text-neutral-title">Guest Wi-Fi</p>
+<p class="text-neutral-muted">Network: FrankFoods_Guest</p>
+</div>
+</div>
+<button class="px-2.5 py-1.5 rounded-lg bg-white border border-neutral-border font-medium text-neutral-title hover:bg-neutral-50 active:scale-95 transition-all text-xs" id="wifiBtn" onclick="copyWifiPassword()">
+          Pass: Acacia2025
+        </button>
+</section>
+</main>
+<!-- Simple, Trustworthy Customer Footer -->
+<footer class="mt-auto px-4 pt-4 border-t border-neutral-border text-center">
+<p class="text-xs text-neutral-muted">Frank Foods Acacia Mall • Kampala</p>
+<p class="text-[11px] text-neutral-400 mt-1">Need help? Ask any dining staff member near your terrace table.</p>
+</footer>
+</div>
+<!-- Interactive script for table interactions -->
+<script>
+    function triggerServerCall() {
+      const btn = document.getElementById('callServerBtn');
+      const feedback = document.getElementById('callFeedback');
+      btn.disabled = true;
+      btn.classList.add('opacity-75');
+      feedback.classList.remove('hidden');
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove('opacity-75');
+      }, 5000);
+    }
+
+    function copyWifiPassword() {
+      const btn = document.getElementById('wifiBtn');
+      navigator.clipboard.writeText('Acacia2025').then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('text-brand-dark', 'font-semibold');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('text-brand-dark', 'font-semibold');
+        }, 2000);
+      });
+    }
+  </script>
+</body></html>

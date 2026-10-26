@@ -1,0 +1,248 @@
+---
+name: Kampala Culinary Canvas
+colors:
+  surface: '#fbf9f9'
+  surface-dim: '#dbdad9'
+  surface-bright: '#fbf9f9'
+  surface-container-lowest: '#ffffff'
+  surface-container-low: '#f5f3f3'
+  surface-container: '#efeded'
+  surface-container-high: '#e9e8e7'
+  surface-container-highest: '#e3e2e2'
+  on-surface: '#1b1c1c'
+  on-surface-variant: '#584237'
+  inverse-surface: '#303031'
+  inverse-on-surface: '#f2f0f0'
+  outline: '#8c7164'
+  outline-variant: '#e0c0b1'
+  surface-tint: '#9d4300'
+  primary: '#9d4300'
+  on-primary: '#ffffff'
+  primary-container: '#f97316'
+  on-primary-container: '#582200'
+  inverse-primary: '#ffb690'
+  secondary: '#5f5e5e'
+  on-secondary: '#ffffff'
+  secondary-container: '#e2dfde'
+  on-secondary-container: '#636262'
+  tertiary: '#a73a00'
+  on-tertiary: '#ffffff'
+  tertiary-container: '#ff6d2c'
+  on-tertiary-container: '#5d1d00'
+  error: '#ba1a1a'
+  on-error: '#ffffff'
+  error-container: '#ffdad6'
+  on-error-container: '#93000a'
+  primary-fixed: '#ffdbca'
+  primary-fixed-dim: '#ffb690'
+  on-primary-fixed: '#341100'
+  on-primary-fixed-variant: '#783200'
+  secondary-fixed: '#e5e2e1'
+  secondary-fixed-dim: '#c8c6c5'
+  on-secondary-fixed: '#1c1b1b'
+  on-secondary-fixed-variant: '#474746'
+  tertiary-fixed: '#ffdbce'
+  tertiary-fixed-dim: '#ffb599'
+  on-tertiary-fixed: '#370e00'
+  on-tertiary-fixed-variant: '#7f2b00'
+  background: '#fbf9f9'
+  on-background: '#1b1c1c'
+  surface-variant: '#e3e2e2'
+typography:
+  headline-display:
+    fontFamily: Inter
+    fontSize: 48px
+    fontWeight: '800'
+    lineHeight: 56px
+    letterSpacing: -0.03em
+  headline-display-mobile:
+    fontFamily: Inter
+    fontSize: 32px
+    fontWeight: '800'
+    lineHeight: 40px
+    letterSpacing: -0.02em
+  headline-lg:
+    fontFamily: Inter
+    fontSize: 32px
+    fontWeight: '700'
+    lineHeight: 40px
+    letterSpacing: -0.02em
+  headline-lg-mobile:
+    fontFamily: Inter
+    fontSize: 24px
+    fontWeight: '700'
+    lineHeight: 32px
+    letterSpacing: -0.015em
+  headline-md:
+    fontFamily: Inter
+    fontSize: 22px
+    fontWeight: '700'
+    lineHeight: 28px
+    letterSpacing: -0.01em
+  headline-sm:
+    fontFamily: Inter
+    fontSize: 18px
+    fontWeight: '600'
+    lineHeight: 24px
+  price-lg:
+    fontFamily: Inter
+    fontSize: 22px
+    fontWeight: '700'
+    lineHeight: 28px
+    letterSpacing: -0.01em
+  price-md:
+    fontFamily: Inter
+    fontSize: 16px
+    fontWeight: '700'
+    lineHeight: 22px
+  body-lg:
+    fontFamily: Inter
+    fontSize: 16px
+    fontWeight: '400'
+    lineHeight: 24px
+  body-md:
+    fontFamily: Inter
+    fontSize: 14px
+    fontWeight: '400'
+    lineHeight: 20px
+  body-sm:
+    fontFamily: Inter
+    fontSize: 12px
+    fontWeight: '400'
+    lineHeight: 16px
+  label-md:
+    fontFamily: Inter
+    fontSize: 14px
+    fontWeight: '600'
+    lineHeight: 20px
+    letterSpacing: 0.01em
+  label-sm:
+    fontFamily: Inter
+    fontSize: 12px
+    fontWeight: '600'
+    lineHeight: 16px
+    letterSpacing: 0.02em
+  receipt-mono:
+    fontFamily: Inter
+    fontSize: 13px
+    fontWeight: '500'
+    lineHeight: 18px
+rounded:
+  sm: 0.25rem
+  DEFAULT: 0.5rem
+  md: 0.75rem
+  lg: 1rem
+  xl: 1.5rem
+  full: 9999px
+spacing:
+  gutter: 1rem
+  gutter-desktop: 1.5rem
+  margin: 1rem
+  margin-desktop: 2.5rem
+  space-xs: 0.5rem
+  space-sm: 1rem
+  space-md: 1.5rem
+  space-lg: 2rem
+  space-xl: 2.5rem
+  space-2xl: 3rem
+---
+
+## Brand & Style
+
+This design system drives a modern, high-velocity digital dining and ordering platform built for the vibrant urban culinary scene in Kampala, Uganda. The brand personality balances culinary warmth, appetite appeal, and modern logistical precision. It feels immediate, energetic, and impeccably reliable—delivering frictionless browsing under fast-paced mobile ordering conditions.
+
+The visual style is **Contemporary Warm Minimalist** paired with high-clarity operational UI:
+- **Clean Contrast & Whitespace:** Pristine `#FFFFFF` and warm stone-white surfaces anchor high-resolution dish photography, keeping interface distractions to a minimum.
+- **Purposeful Saffron & Citrus Energy:** Vibrant orange serves as an intentional action vector (ordering, checking out, instant customization) rather than decorative clutter.
+- **Operational Clarity:** Real-time dish customization, order progress tracking (Preparation, Dispatch, Boda Delivery), and pricing transparency are treated with institutional legibility.
+- **Urban Utility:** Designed for rapid thumb-driven touch on mobile devices along Kampala's transit corridors, maintaining effortless legibility under varied outdoor sunlight and indoor restaurant ambient lighting.
+
+## Colors
+
+The palette establishes a culinary-focused hierarchy where purposeful citrus tones indicate interactive vitality, rich neutral blacks deliver uncompromising legibility, and muted tones recede gracefully:
+
+- **Primary Brand (`#F97316`):** The primary brand tone for key touchpoints, primary actions, and brand identity.
+- **Deep Accent & Hover (`#EA580C`):** Used strictly for hover, active states, active segmented controllers, and high-emphasis focal cues.
+- **Pale Tint Surface (`#FFF7ED`):** Subtle container backgrounds for order summaries, active delivery tracking cards, and promotional callouts.
+- **Dark Primary & Text (`#171717`):** Primary headings, meal names, finalized UGX pricing, and high-contrast night/footer panels.
+- **Secondary Neutral (`#525252`):** Body descriptions, ingredient narratives, and active input labels.
+- **Muted Neutral (`#737373`):** Metadata, preparation time estimates, order IDs, and inactive states.
+- **Backgrounds & Divisors:** Canvas base `#FFFFFF`, secondary neutral panels `#FAFAFA`, with crisp `#E5E5E5` hairline dividers.
+- **Semantic Roles:**
+  - *Order Confirmed / Success:* `#15803D` on `#DCFCE7`
+  - *Prep Delay / Caution:* `#B45309` on `#FEF3C7`
+  - *Out of Stock / Destructive:* `#B91C1C` on `#FEE2E2`
+  - *Driver En Route / Info:* `#C2410C` on `#FFEDD5`
+
+## Typography
+
+The typographic engine relies on **Inter** to maximize structural clarity, legibility at scale, and dense transactional parsing:
+
+- **Tabular Figures (`tnum`):** All financial references (`UGX 24,000`), cart calculations, item quantities, and receipt lines must enforce CSS `font-variant-numeric: tabular-nums;`. This prevents visual jitter when counts increment and ensures vertical decimal alignment across checkout breakdowns.
+- **Headlines:** Use heavy weights (700 and 800) with slight negative letter tracking to impart authority and culinary distinction.
+- **Price Hierarchy:** Price labels pair with bold weights and darker contrast (`#171717`) to ensure no ambiguity during meal checkout. The currency indicator `UGX` is set at 75% relative size and `font-weight: 600` adjacent to the primary number.
+
+## Layout & Spacing
+
+The layout is constructed around an uncompromising strict **8-point geometric scale** (8px, 16px, 24px, 32px, 40px, 48px).
+
+### Layout Grid Models
+- **Mobile (Up to 639px):** 4-column fluid layout with `16px` outer margins and `16px` gutters. Food category carousels bleed to the edge with trailing edge padding. Cart summaries pin to the bottom viewport with an elevated backdrop blur.
+- **Tablet (640px to 1023px):** 8-column fluid layout with `24px` margins and `16px` gutters. Two-column menu grid pairing photography and meal attributes side-by-side.
+- **Desktop (1024px+):** 12-column layout capped at a maximum container width of `1280px`. Features a sticky left navigation bar for cuisine categories, an 8-column central menu feed, and a dedicated 4-column live order/bill panel.
+
+### Spacing Usage
+- `space-xs (8px)`: Gaps between price badges and item titles; internal badge padding; spacing between modifiers.
+- `space-sm (16px)`: Standard gap between card contents; input field vertical internal padding; icon-to-label separation.
+- `space-md (24px)`: Padding inside food cards; grid row separation in item categories.
+- `space-lg (32px)`: Spacing between distinct category blocks (e.g., 'Starters & Quick Bites' to 'Kampala Grills').
+- `space-xl (40px)` to `space-2xl (48px)`: Section-level vertical pacing and checkout partition margins.
+
+## Elevation & Depth
+
+To sustain a clean, modern aesthetic that feels light and appetizing, this design system avoids heavy shadows, instead employing **tonal layer separation**, **ghost outlines**, and **subtle ambient diffusion**:
+
+- **Level 0 (Flat Canvas):** `#FFFFFF` as the main app canvas with `#FAFAFA` used for layered panels, modifier selection wells, and delivery address pickers.
+- **Level 1 (Card Rest):** Outlined with `1px solid #E5E5E5` on `#FFFFFF` surfaces. Soft micro-ambient shadow: `0 1px 3px rgba(23, 23, 23, 0.04), 0 1px 2px rgba(23, 23, 23, 0.02)`.
+- **Level 2 (Hover & Active Product Tiles):** Subtle elevation bloom: `0 8px 20px -4px rgba(249, 115, 22, 0.08), 0 4px 12px -2px rgba(23, 23, 23, 0.05)`. Border transitions to `#F97316` at 30% alpha.
+- **Level 3 (Sticky Ordering Bar & Floating Summary):** Surface blur applied (`backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.92);`) backed by `0 12px 32px -4px rgba(23, 23, 23, 0.08)`.
+- **Level 4 (Modals, Customization Drawers, Dialogs):** Backdrop dim via `rgba(23, 23, 23, 0.45)`. Sheet surface elevation: `0 20px 48px -8px rgba(23, 23, 23, 0.16)`.
+
+## Shapes
+
+The shape system blends friendly curves with structural precision, communicating contemporary warmth while preserving data density:
+
+- **Cards & Structural Containers:** `12px` to `16px` radius (`rounded-lg` / `rounded-xl`). Used on dish listing cards, cart summary boxes, delivery timeline steps, and imagery wrappers.
+- **Buttons & Input Elements:** Strictly `10px` to `12px` radius. This provides tactile squircle forms that make touch-targets obvious without looking like playful toys.
+- **Chips, Category Tags & Status Indicators:** `9999px` (Full Pill). Category pills (e.g., "Rolex & Wraps", "Nyama Choma", "Beverages"), operational badges ("Kitchen Preparing", "Express Boda"), and discount pills utilize full-radius pills to differentiate actionable controls from structural content boxes.
+
+## Components
+
+### Buttons
+- **Primary Action (Add to Cart / Place Order):** Solid `#F97316` fill, `#FFFFFF` text, `12px` border radius, minimum height `48px` on mobile for thumb accuracy. Active/pressed state drops to `#EA580C`.
+- **Secondary (Customise / View Options):** Solid `#FAFAFA` background, `1px solid #E5E5E5` border, `#171717` text. On hover: border `#F97316`, background `#FFF7ED`.
+- **Destructive (Clear Order / Remove Item):** `#FEE2E2` background, `#B91C1C` text.
+
+### Category Chips & Filters
+- **Default State:** Full-pill (`9999px`), `1px solid #E5E5E5`, `#FFFFFF` background, `#525252` text.
+- **Active / Selected State:** `#171717` background with `#FFFFFF` text, or `#FFF7ED` background with `#F97316` border and `#EA580C` text for promotional campaigns.
+
+### Product & Menu Item Cards
+- Horizontal list card for mobile, vertical card for desktop.
+- Integrated square or 4:3 rounded image canvas (`12px` inner radius) on `#FAFAFA`.
+- Title set in `headline-sm`, single-line ingredient excerpt in `body-sm` (`#737373`), and price in `price-md` (`#171717`) using tabular figures.
+- Direct quick-add `+` icon button fixed at bottom right with tactile feedback.
+
+### Input Fields & Special Instructions
+- Height `48px`, border `1px solid #E5E5E5`, radius `10px`, background `#FFFFFF`. Focus transitions to `2px solid #F97316` without outer default OS ring.
+- Placeholder text in `#737373`. Prefix icons (e.g., search, Kampala location pins) tinted in `#525252`.
+
+### Checkboxes, Steppers & Radio Buttons
+- Quantity Stepper (`- [count] +`): Pill-shaped container with `#FAFAFA` fill, `#E5E5E5` border, `#171717` count displaying tabular numbers.
+- Radio buttons for dish modifiers (e.g., "Mild", "Spicy", "Extra Pilau"): 20px circle, `#F97316` filled check ring when selected.
+
+### Delivery & Kitchen Status Timeline
+- Step indicator featuring vertical or horizontal linked pills:
+  - Finished steps: `#15803D` icon with `#DCFCE7` ring.
+  - In-progress / Dispatch: Pulsing `#F97316` indicator on `#FFF7ED`.
+  - Pending steps: `#E5E5E5` track with `#737373` muted labels.

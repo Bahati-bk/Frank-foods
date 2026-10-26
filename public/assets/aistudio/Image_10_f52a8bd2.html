@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manager &amp; Owner Portal | Frank Foods</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#F97316',
+              hover: '#EA580C',
+              light: '#FFF7ED',
+              border: '#FED7AA'
+            },
+            neutral: {
+              base: '#FAFAFA',
+              card: '#FFFFFF',
+              dark: '#171717',
+              muted: '#525252',
+              subtle: '#737373',
+              border: '#E5E5E5',
+              surface: '#F5F5F5'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #FAFAFA; color: #171717; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-neutral-base text-neutral-dark antialiased">
+<!-- Header -->
+<header class="w-full bg-white border-b border-neutral-border sticky top-0 z-40">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-brand-light border border-brand-border flex items-center justify-center">
+<span class="material-symbols-outlined text-brand text-2xl">restaurant</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-lg leading-tight text-neutral-dark">Frank Foods</span>
+<span class="text-xs font-medium text-brand uppercase tracking-wider">Manager &amp; Owner Portal</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-sm text-neutral-muted">
+<a class="hover:text-neutral-dark transition-colors" href="#">Customer Menu</a>
+<span class="text-neutral-border">|</span>
+<a class="hover:text-neutral-dark transition-colors flex items-center gap-1.5" href="mailto:support@frankfoods.ug">
+<span class="material-symbols-outlined text-base">help_outline</span>
+<span>Support</span>
+</a>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 flex items-center justify-center">
+<div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+<!-- Left: Companion / Highlights Panel -->
+<div class="lg:col-span-5 bg-white border border-neutral-border rounded-xl p-6 sm:p-8 flex flex-col justify-between shadow-sm">
+<div>
+<!-- Hospitality Image -->
+<div class="w-full rounded-lg overflow-hidden aspect-[16/10] bg-neutral-surface relative mb-6">
+<img alt="Frank Foods kitchen and dining operations" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJptAIB3kc7z99LadgV_-91H24UXq3M5euMt560uLweRXMXdeuCZ1Y8rByiVYh9HIHi9RTwUoXYiNfpbkSgMSO2bB5Eqz4FVeKGkBmQql3aoAFRAJi36m0EqJSvm_WiSS5iadqMZZWNdTkgaEeBfQsjPyJp9EtPNeRD0ykMbYl3TQsRyJEH-aQZBWktMjgRBzBFMJiq-0YUBPu5ALSZ3DJKrW8YM3wr67bIZ3X2j22PVmjn-NWiNck"/>
+<div class="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Kampala Kitchens
+            </div>
+</div>
+<h2 class="text-xl font-bold text-neutral-dark tracking-tight mb-2">
+            Restaurant Management, Simplified
+          </h2>
+<p class="text-sm text-neutral-muted mb-6 leading-relaxed">
+            Essential Phase 1 tools to keep your Kampala outlet running smoothly and delighting diners every shift.
+          </p>
+<!-- Core Feature List -->
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-md bg-brand-light text-brand flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-neutral-dark">Live Menu Updates</h3>
+<p class="text-xs text-neutral-muted leading-relaxed">Instantly update pricing and 86 sold-out dishes in real time.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-md bg-brand-light text-brand flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">qr_code_2</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-neutral-dark">Table QR Management</h3>
+<p class="text-xs text-neutral-muted leading-relaxed">Generate and print table QR codes for seamless dine-in guest ordering.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-md bg-brand-light text-brand flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-neutral-dark">Daily Shift Summary</h3>
+<p class="text-xs text-neutral-muted leading-relaxed">View order counts, item velocity, and daily sales totals at a glance.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-neutral-border text-xs text-neutral-subtle flex items-center justify-between">
+<span>Frank Foods Portal v1.0</span>
+<span>Acacia &amp; Kololo</span>
+</div>
+</div>
+<!-- Right: Clean Login Card -->
+<div class="lg:col-span-7 bg-white border border-neutral-border rounded-xl p-6 sm:p-10 shadow-sm flex flex-col justify-center">
+<div class="max-w-md w-full mx-auto">
+<div class="mb-8">
+<h1 class="text-2xl sm:text-3xl font-bold text-neutral-dark tracking-tight mb-2">
+              Manager &amp; Owner Portal
+            </h1>
+<p class="text-sm text-neutral-muted leading-relaxed">
+              Sign in to manage your menu, table QR codes, staff, and daily orders.
+            </p>
+</div>
+<!-- Login Form -->
+<form class="space-y-5" onsubmit="handleLogin(event)">
+<!-- Branch Selector -->
+<div>
+<label class="block text-sm font-medium text-neutral-dark mb-1.5" for="operationalBranch">
+                Operational Branch
+              </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-subtle text-[20px] pointer-events-none">storefront</span>
+<select class="w-full h-11 pl-11 pr-10 rounded-lg border border-neutral-border bg-white text-neutral-dark text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none appearance-none cursor-pointer" id="operationalBranch" name="branch" required="">
+<option value="acacia">Acacia Mall Flagship</option>
+<option value="kololo">Kololo Branch</option>
+</select>
+<span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-subtle text-[20px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Email Address -->
+<div>
+<label class="block text-sm font-medium text-neutral-dark mb-1.5" for="userEmail">
+                Email address
+              </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-subtle text-[20px] pointer-events-none">mail</span>
+<input class="w-full h-11 pl-11 pr-4 rounded-lg border border-neutral-border bg-white text-neutral-dark text-sm placeholder:text-neutral-subtle focus:border-brand focus:ring-1 focus:ring-brand outline-none" id="userEmail" name="email" placeholder="manager@frankfoods.ug" required="" type="email" value="manager@frankfoods.ug"/>
+</div>
+</div>
+<!-- Password with Show/Hide Toggle -->
+<div>
+<label class="block text-sm font-medium text-neutral-dark mb-1.5" for="userPassword">
+                Password
+              </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-subtle text-[20px] pointer-events-none">lock</span>
+<input class="w-full h-11 pl-11 pr-11 rounded-lg border border-neutral-border bg-white text-neutral-dark text-sm placeholder:text-neutral-subtle focus:border-brand focus:ring-1 focus:ring-brand outline-none" id="userPassword" name="password" placeholder="Enter your password" required="" type="password" value="••••••••••••"/>
+<button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-subtle hover:text-neutral-dark p-1 rounded transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-[20px] block" id="toggleIcon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me & Forgot Password -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded border-neutral-border text-brand focus:ring-brand cursor-pointer" name="remember" type="checkbox"/>
+<span class="text-sm text-neutral-muted">Remember this device</span>
+</label>
+<a class="text-sm font-medium text-brand hover:text-brand-hover transition-colors" href="#" onclick="alert('Password reset link has been emailed to your account.'); return false;">
+                Forgot password?
+              </a>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-11 bg-brand hover:bg-brand-hover text-white font-medium rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 mt-2 cursor-pointer" id="submitBtn" type="submit">
+<span>Sign In to Management Portal</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+<!-- Help Callout -->
+<div class="mt-6 pt-6 border-t border-neutral-border text-center">
+<p class="text-xs text-neutral-muted">
+              First time setting up your manager access? 
+              <a class="text-brand font-medium hover:underline" href="mailto:support@frankfoods.ug">Contact Admin Support</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Clean Footer -->
+<footer class="w-full bg-white border-t border-neutral-border py-6">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-muted">
+<div>
+        © 2025 Frank Foods Uganda Ltd. All rights reserved.
+      </div>
+<div>
+        Need assistance? Contact <a class="text-neutral-dark font-medium hover:text-brand transition-colors" href="mailto:support@frankfoods.ug">support@frankfoods.ug</a>
+</div>
+</div>
+</footer>
+<script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('userPassword');
+      const toggleIcon = document.getElementById('toggleIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.textContent = 'visibility_off';
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.textContent = 'visibility';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const originalContent = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>Signing in...</span>';
+      
+      setTimeout(() => {
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span><span>Signed In</span>';
+        btn.classList.remove('bg-brand', 'hover:bg-brand-hover');
+        btn.classList.add('bg-emerald-600');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalContent;
+          btn.classList.remove('bg-emerald-600');
+          btn.classList.add('bg-brand', 'hover:bg-brand-hover');
+          btn.disabled = false;
+        }, 2000);
+      }, 700);
+    }
+  </script>
+</body></html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_dashboard" name="shell-type"/>
+<title>Frank Foods - Staff Order Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+      body { overscroll-behavior: none; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#FAFAFA",
+            "background": "#F5F5F5",
+            "on-surface": "#171717",
+            "on-surface-variant": "#525252",
+            "primary": "#F97316",
+            "primary-dark": "#EA580C",
+            "primary-light": "#FFEDD5",
+            "border-subtle": "#E5E5E5",
+            "warning-bg": "#FEF3C7",
+            "warning-border": "#FDE68A",
+            "warning-text": "#B45309",
+            "warning-pill": "#DC2626",
+            "success-bg": "#DCFCE7",
+            "success-text": "#15803D",
+            "info-bg": "#E0F2FE",
+            "info-text": "#0369A1"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TOP HEADER -->
+<header class="sticky top-0 z-40 bg-white border-b border-border-subtle shadow-xs">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+<!-- Brand & Hub Info -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-extrabold text-xl shadow-sm">
+          F
+        </div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-lg font-bold text-on-surface leading-none">Frank Foods</h1>
+<span class="text-xs bg-primary-light text-primary font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Staff Dashboard</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[14px] text-primary">storefront</span>
+<span>Acacia Mall Hub</span>
+</div>
+</div>
+</div>
+<!-- Right Header Controls: Shift Info & Station Toggle -->
+<div class="flex items-center gap-3">
+<!-- Switch Station View Quick Toggle -->
+<div class="hidden md:flex items-center bg-gray-100 p-1 rounded-lg text-xs font-semibold text-on-surface-variant">
+<button class="px-3 py-1.5 rounded-md bg-white text-on-surface shadow-xs font-bold flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[15px] text-primary">splitscreen</span>
+<span>All Station Queue</span>
+</button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[15px]">soup_kitchen</span>
+<span>Kitchen Tablet KDS</span>
+</button>
+</div>
+<!-- Staff User Badge -->
+<div class="flex items-center gap-2.5 pl-3 border-l border-border-subtle">
+<div class="w-9 h-9 rounded-full bg-primary-light text-primary font-bold flex items-center justify-center text-sm border border-primary/20">
+            SK
+          </div>
+<div class="hidden sm:flex flex-col text-left">
+<span class="text-xs font-bold text-on-surface leading-tight">Sarah K.</span>
+<span class="text-[11px] text-on-surface-variant font-medium">Floor Staff</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN VIEWPORT CONTAINER -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col gap-6">
+<!-- OVERVIEW STATS & FILTER TABS -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<!-- Filter Tabs according to Phase 1 spec -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0" id="filter-tabs">
+<!-- Tab 1: All Orders -->
+<button class="px-4 py-2.5 rounded-xl bg-on-surface text-white text-sm font-semibold flex items-center gap-2 shadow-xs shrink-0 transition-all">
+<span>All Orders</span>
+<span class="px-2 py-0.5 rounded-full bg-white/20 text-white text-xs font-bold">12</span>
+</button>
+<!-- Tab 2: Pending Payment [Badge Highlight] -->
+<button class="px-4 py-2.5 rounded-xl bg-white border border-red-200 hover:bg-red-50 text-red-700 text-sm font-bold flex items-center gap-2 shadow-xs shrink-0 transition-all ring-1 ring-red-400">
+<span class="material-symbols-outlined text-[18px] text-red-600">lock_clock</span>
+<span>Pending Payment</span>
+<span class="px-2 py-0.5 rounded-full bg-red-600 text-white text-xs font-extrabold animate-pulse">3 Action Required</span>
+</button>
+<!-- Tab 3: Preparing -->
+<button class="px-4 py-2.5 rounded-xl bg-white border border-border-subtle hover:bg-gray-50 text-on-surface-variant hover:text-on-surface text-sm font-semibold flex items-center gap-2 shadow-xs shrink-0 transition-all">
+<span class="material-symbols-outlined text-[18px] text-primary">local_fire_department</span>
+<span>Preparing</span>
+<span class="px-2 py-0.5 rounded-full bg-gray-100 text-on-surface font-bold text-xs">6</span>
+</button>
+<!-- Tab 4: Ready to Serve -->
+<button class="px-4 py-2.5 rounded-xl bg-white border border-border-subtle hover:bg-gray-50 text-on-surface-variant hover:text-on-surface text-sm font-semibold flex items-center gap-2 shadow-xs shrink-0 transition-all">
+<span class="material-symbols-outlined text-[18px] text-emerald-600">room_service</span>
+<span>Ready to Serve</span>
+<span class="px-2 py-0.5 rounded-full bg-gray-100 text-on-surface font-bold text-xs">3</span>
+</button>
+</div>
+<!-- Quick Shift Search & Operational Meta -->
+<div class="flex items-center gap-3">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-white text-on-surface placeholder-on-surface-variant text-xs pl-9 pr-3 py-2.5 rounded-xl border border-border-subtle outline-none focus:border-primary transition-all shadow-xs" placeholder="Search order #, table, or guest..." type="text"/>
+</div>
+<button class="p-2.5 rounded-xl bg-white border border-border-subtle text-on-surface hover:border-primary transition-colors flex items-center justify-center shrink-0 shadow-xs" onclick="location.reload()" title="Refresh Live Queue">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- STRICT RELEASE NOTIFICATION BANNER -->
+<div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex items-start gap-3">
+<span class="material-symbols-outlined text-amber-700 text-xl shrink-0 mt-0.5">verified_user</span>
+<div class="text-xs text-amber-900 leading-relaxed">
+<strong class="font-bold text-amber-950">Shift Release Policy Active:</strong> Table QR and walk-in orders marked <em>'Pending Payment'</em> cannot be dispatched to the kitchen. Confirm cash or instant mobile money receipt to enable the <strong>Start Preparation</strong> button.
+      </div>
+</div>
+<!-- ORDER QUEUE CARDS / LIST -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+<!-- ========================================================================= -->
+<!-- CARD A: PRIMARY FOCUS - Table QR Order (matching screens 1-3)             -->
+<!-- ========================================================================= -->
+<div class="bg-white rounded-2xl border-2 border-red-300 shadow-sm overflow-hidden flex flex-col relative transition-all" id="order-card-0842">
+<!-- Top Urgency Indicator Strip -->
+<div class="bg-red-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+<span>Awaiting Payment Verification</span>
+</div>
+<span>Table QR Order</span>
+</div>
+<div class="p-5 flex flex-col gap-4">
+<!-- Card Header & Metadata -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-on-surface tracking-tight">#FF-0842</span>
+<span class="bg-gray-100 text-on-surface font-bold text-xs px-2.5 py-1 rounded-md">Table 07 (Terrace)</span>
+</div>
+<span class="text-xs text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Placed: 1:42 PM (4m ago)
+              </span>
+</div>
+<!-- Payment Status Warning Pill -->
+<span class="bg-red-100 border border-red-300 text-red-800 text-xs font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-2xs" id="status-badge-0842">
+<span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+<span>Payment Not Verified</span>
+</span>
+</div>
+<!-- Items Ordered List -->
+<div class="bg-gray-50 rounded-xl p-3.5 border border-border-subtle flex flex-col gap-2.5">
+<span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Ordered Items:</span>
+<!-- Item 1 -->
+<div class="flex items-start justify-between text-xs pb-2 border-b border-gray-200">
+<div class="flex flex-col pr-2">
+<span class="font-bold text-on-surface text-sm">1x Frank's Signature Smokehouse Burger</span>
+<span class="text-on-surface-variant font-medium text-[11px]">Medium Well, Extra Smoked Cheddar</span>
+</div>
+<span class="font-bold text-on-surface whitespace-nowrap">UGX 31,500</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-start justify-between text-xs pb-2 border-b border-gray-200">
+<div class="flex flex-col pr-2">
+<span class="font-bold text-on-surface text-sm">1x Kampala Flame-Grilled Chicken</span>
+<span class="text-on-surface-variant font-medium text-[11px]">Half Chicken, Piri-Piri Lemon Herb</span>
+</div>
+<span class="font-bold text-on-surface whitespace-nowrap">UGX 32,000</span>
+</div>
+<!-- Item 3 -->
+<div class="flex items-start justify-between text-xs">
+<div class="flex flex-col pr-2">
+<span class="font-bold text-on-surface text-sm">2x Passion &amp; Ginger Cooler</span>
+<span class="text-on-surface-variant font-medium text-[11px]">500ml, Less Ice</span>
+</div>
+<span class="font-bold text-on-surface whitespace-nowrap">UGX 17,000</span>
+</div>
+</div>
+<!-- Special Instructions -->
+<div class="bg-amber-50/80 border border-amber-200/80 rounded-xl px-3.5 py-2.5 flex items-start gap-2 text-xs text-amber-900">
+<span class="material-symbols-outlined text-[16px] text-amber-700 shrink-0 mt-0.5">comment</span>
+<span class="italic font-medium">"Please serve drinks first, extra napkins requested for table."</span>
+</div>
+<!-- Total Calculation -->
+<div class="flex items-center justify-between pt-1">
+<span class="text-xs font-semibold text-on-surface-variant">Order Total Due:</span>
+<span class="text-xl font-extrabold text-on-surface">UGX 80,500</span>
+</div>
+<!-- Enforcement Actions -->
+<div class="pt-2 flex flex-col gap-2.5 border-t border-border-subtle">
+<!-- Payment Channel Selectors -->
+<div class="flex flex-col gap-1.5" id="payment-actions-container">
+<span class="text-xs font-bold text-on-surface">Confirm Payment Collected:</span>
+<div class="grid grid-cols-3 gap-2">
+<button class="px-2.5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-on-surface text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-gray-200" onclick="confirmPaymentAndUnlock('Cash')" type="button">
+<span class="material-symbols-outlined text-[16px] text-green-700">payments</span>
+<span>Cash</span>
+</button>
+<button class="px-2.5 py-2 rounded-lg bg-amber-100/70 hover:bg-amber-200 text-amber-900 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-amber-300" onclick="confirmPaymentAndUnlock('MTN MoMo')" type="button">
+<span class="material-symbols-outlined text-[16px] text-amber-800">smartphone</span>
+<span>MTN MoMo</span>
+</button>
+<button class="px-2.5 py-2 rounded-lg bg-red-100/70 hover:bg-red-200 text-red-900 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-red-300" onclick="confirmPaymentAndUnlock('Airtel Money')" type="button">
+<span class="material-symbols-outlined text-[16px] text-red-800">contactless</span>
+<span>Airtel Money</span>
+</button>
+</div>
+</div>
+<!-- Start Preparation Button (Disabled until confirmed) -->
+<div class="relative group mt-1">
+<button class="w-full py-3.5 px-4 rounded-xl bg-gray-200 text-gray-500 font-bold text-sm flex items-center justify-center gap-2 cursor-not-allowed transition-all" disabled="" id="prep-btn-0842" onclick="startPrepTicket('0842')">
+<span class="material-symbols-outlined text-[18px]">soup_kitchen</span>
+<span id="prep-btn-text">Start Preparation →</span>
+</button>
+<!-- Enforcement Tooltip / Label -->
+<p class="text-center text-[11px] text-red-600 font-semibold mt-1.5 flex items-center justify-center gap-1" id="enforcement-label">
+<span class="material-symbols-outlined text-[13px]">lock</span>
+<span>Verify payment before sending to kitchen</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- CARD B: COUNTER ORDER (Fulfilling counter orders specification)           -->
+<!-- ========================================================================= -->
+<div class="bg-white rounded-2xl border border-border-subtle shadow-xs overflow-hidden flex flex-col relative transition-all" id="order-card-0843">
+<!-- Top Status Indicator Strip -->
+<div class="bg-blue-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">point_of_sale</span>
+<span>Counter Walk-In Order</span>
+</div>
+<span>Paid</span>
+</div>
+<div class="p-5 flex flex-col gap-4">
+<!-- Card Header & Metadata -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-on-surface tracking-tight">#FF-0843</span>
+<span class="bg-gray-100 text-on-surface font-bold text-xs px-2.5 py-1 rounded-md">Counter Walk-in #02</span>
+</div>
+<span class="text-xs text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Placed: 1:44 PM (2m ago)
+              </span>
+</div>
+<!-- Payment Status Pill -->
+<span class="bg-green-100 border border-green-200 text-green-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+<span>Paid (Cash)</span>
+</span>
+</div>
+<!-- Items Ordered List -->
+<div class="bg-gray-50 rounded-xl p-3.5 border border-border-subtle flex flex-col gap-2.5">
+<span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Ordered Items:</span>
+<div class="flex items-start justify-between text-xs pb-2 border-b border-gray-200">
+<div class="flex flex-col pr-2">
+<span class="font-bold text-on-surface text-sm">1x Savory Beef Pilau Platter</span>
+<span class="text-on-surface-variant font-medium text-[11px]">With Fresh Kachumbari &amp; Gravy</span>
+</div>
+<span class="font-bold text-on-surface whitespace-nowrap">UGX 26,000</span>
+</div>
+<div class="flex items-start justify-between text-xs">
+<div class="flex flex-col pr-2">
+<span class="font-bold text-on-surface text-sm">1x Passion &amp; Ginger Cooler</span>
+<span class="text-on-surface-variant font-medium text-[11px]">500ml, Chilled</span>
+</div>
+<span class="font-bold text-on-surface whitespace-nowrap">UGX 8,500</span>
+</div>
+</div>
+<!-- Total Calculation -->
+<div class="flex items-center justify-between pt-1">
+<span class="text-xs font-semibold text-on-surface-variant">Order Total:</span>
+<span class="text-xl font-extrabold text-on-surface">UGX 34,500</span>
+</div>
+<!-- Active Preparation Action Button -->
+<div class="pt-2 border-t border-border-subtle">
+<button class="w-full py-3.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all" onclick="advanceOrderStatus(this, '0843', 'Preparing in Kitchen')">
+<span class="material-symbols-outlined text-[18px]">soup_kitchen</span>
+<span>Start Preparation →</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- CARD C: IN PREPARATION STAGE                                              -->
+<!-- ========================================================================= -->
+<div class="bg-white rounded-2xl border border-border-subtle shadow-xs overflow-hidden flex flex-col relative transition-all" id="order-card-0839">
+<div class="bg-amber-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">local_fire_department</span>
+<span>Stage: Preparing (14m in kitchen)</span>
+</div>
+<span>Grill Station</span>
+</div>
+<div class="p-5 flex flex-col gap-4">
+<!-- Card Header & Metadata -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-on-surface tracking-tight">#FF-0839</span>
+<span class="bg-gray-100 text-on-surface font-bold text-xs px-2.5 py-1 rounded-md">Table 04</span>
+</div>
+<span class="text-xs text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Placed: 1:30 PM (14m in prep)
+              </span>
+</div>
+<!-- Payment Status Pill -->
+<span class="bg-green-100 border border-green-200 text-green-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+<span>Paid (MTN MoMo)</span>
+</span>
+</div>
+<!-- Items List -->
+<div class="bg-gray-50 rounded-xl p-3.5 border border-border-subtle flex flex-col gap-2.5">
+<span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Kitchen Checklist:</span>
+<div class="flex items-center justify-between text-xs pb-1.5 border-b border-gray-200">
+<span class="font-bold text-on-surface text-sm">1x Smoked Pork Ribs Rack</span>
+<span class="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded text-[10px]">Grill: Finishing</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="font-bold text-on-surface text-sm">2x Cassava Wedges</span>
+<span class="bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded text-[10px]">Fryer: Done</span>
+</div>
+</div>
+<!-- Total Calculation -->
+<div class="flex items-center justify-between pt-1">
+<span class="text-xs font-semibold text-on-surface-variant">Order Total:</span>
+<span class="text-xl font-extrabold text-on-surface">UGX 63,500</span>
+</div>
+<!-- Mark Ready Action Button -->
+<div class="pt-2 border-t border-border-subtle">
+<button class="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all" onclick="advanceOrderStatus(this, '0839', 'Ready at Kitchen Pass')">
+<span class="material-symbols-outlined text-[18px]">room_service</span>
+<span>Mark as Ready to Serve →</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- CARD D: READY TO SERVE STAGE                                              -->
+<!-- ========================================================================= -->
+<div class="bg-white rounded-2xl border border-border-subtle shadow-xs overflow-hidden flex flex-col relative transition-all" id="order-card-0836">
+<div class="bg-emerald-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Stage: Ready at Kitchen Pass</span>
+</div>
+<span>Plated &amp; Hot</span>
+</div>
+<div class="p-5 flex flex-col gap-4">
+<!-- Card Header & Metadata -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-on-surface tracking-tight">#FF-0836</span>
+<span class="bg-gray-100 text-on-surface font-bold text-xs px-2.5 py-1 rounded-md">Table 02</span>
+</div>
+<span class="text-xs text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Placed: 1:22 PM (Ready 2m)
+              </span>
+</div>
+<!-- Payment Status Pill -->
+<span class="bg-green-100 border border-green-200 text-green-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check</span>
+<span>Paid</span>
+</span>
+</div>
+<!-- Items List -->
+<div class="bg-gray-50 rounded-xl p-3.5 border border-border-subtle flex flex-col gap-2.5">
+<span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Service Tray Items:</span>
+<div class="flex items-center justify-between text-xs">
+<span class="font-bold text-on-surface text-sm">2x Grilled Tilapia Fillet &amp; Chips</span>
+<span class="text-xs text-gray-500 font-medium">Plated on Pass</span>
+</div>
+</div>
+<!-- Total Calculation -->
+<div class="flex items-center justify-between pt-1">
+<span class="text-xs font-semibold text-on-surface-variant">Order Total:</span>
+<span class="text-xl font-extrabold text-on-surface">UGX 51,000</span>
+</div>
+<!-- Mark Served Action Button -->
+<div class="pt-2 border-t border-border-subtle">
+<button class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all" onclick="markCompleted(this)">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+<span>Mark as Served ✓</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- SCRIPT FOR SHIFT OPERATIONAL WORKFLOW INTERACTION -->
+<script>
+    function confirmPaymentAndUnlock(method) {
+      // 1. Update Card Border and Status Badge
+      const card = document.getElementById('order-card-0842');
+      const badge = document.getElementById('status-badge-0842');
+      const prepBtn = document.getElementById('prep-btn-0842');
+      const enforcementLabel = document.getElementById('enforcement-label');
+      const paymentContainer = document.getElementById('payment-actions-container');
+
+      if (badge) {
+        badge.className = "bg-green-100 border border-green-200 text-green-800 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1";
+        badge.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span><span>Paid (${method})</span>`;
+      }
+
+      if (card) {
+        card.classList.remove('border-red-300');
+        card.classList.add('border-green-300');
+        // change top bar to normal blue/gray
+        const topBar = card.querySelector('.bg-red-600');
+        if (topBar) {
+          topBar.className = "bg-green-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold";
+          topBar.innerHTML = `<span>Payment Verified via ${method}</span><span>Ready for Kitchen</span>`;
+        }
+      }
+
+      // 2. Enable the Preparation button
+      if (prepBtn) {
+        prepBtn.disabled = false;
+        prepBtn.className = "w-full py-3.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all";
+        prepBtn.innerHTML = `<span class="material-symbols-outlined text-[18px]">soup_kitchen</span><span>Start Preparation →</span>`;
+      }
+
+      // 3. Clear enforcement warning label
+      if (enforcementLabel) {
+        enforcementLabel.innerHTML = `<span class="text-green-700 font-semibold flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[13px]">check_circle</span> Payment recorded by Sarah K.</span>`;
+      }
+
+      // Replace payment selector with confirmed badge
+      if (paymentContainer) {
+        paymentContainer.innerHTML = `
+          <div class="p-2.5 rounded-lg bg-green-50 border border-green-200 text-green-900 text-xs font-semibold flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-green-700">verified</span> Verified via ${method}</span>
+            <span class="text-[11px] text-green-700 font-medium">Just now</span>
+          </div>
+        `;
+      }
+    }
+
+    function startPrepTicket(orderId) {
+      const btn = document.getElementById('prep-btn-' + orderId);
+      if (btn) {
+        btn.className = "w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all";
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">soup_kitchen</span><span>Preparing in Kitchen...</span>`;
+      }
+    }
+
+    function advanceOrderStatus(btn, orderNum, newStage) {
+      if (btn) {
+        btn.className = "w-full py-3.5 px-4 rounded-xl bg-emerald-600 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all";
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span><span>Dispatched to Pass ✓</span>`;
+      }
+    }
+
+    function markCompleted(btn) {
+      if (btn) {
+        btn.className = "w-full py-3.5 px-4 rounded-xl bg-gray-100 text-gray-500 font-bold text-sm flex items-center justify-center gap-2 cursor-default";
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px] text-emerald-600">done_all</span><span>Completed & Cleared ✓</span>`;
+        btn.disabled = true;
+      }
+    }
+  </script>
+</body></html>
