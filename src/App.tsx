@@ -396,7 +396,16 @@ export default function App() {
 
     try {
       const tableMatch = tables.find((t) => t.label === selectedTable);
-      const tokenToUse = currentQrToken || (tableMatch ? tableMatch.path.split('token=')[1] : 'qr_ff_table_07_live');
+      const tableToken =
+        tableMatch?.qrCodeToken ||
+        (tableMatch?.path
+          ? new URL(tableMatch.path, window.location.origin).searchParams.get('token') || undefined
+          : undefined);
+      const tokenToUse = tableToken || currentQrToken;
+
+      if (!tokenToUse) {
+        throw new Error('Could not find an active QR code for this table. Please select your table again.');
+      }
 
       const itemsPayload = cartItems.map((it) => {
         const extraNames = it.selectedExtras.map((e) => e.name).join(', ');
