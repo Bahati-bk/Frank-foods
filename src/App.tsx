@@ -174,10 +174,13 @@ export default function App() {
 
       if (tenantTables.length > 0) {
         setTables(tenantTables);
-        if (!tenantTables.some((t) => t.label === selectedTable)) {
-          setSelectedTable(tenantTables[0].label);
-          setCurrentQrToken(tenantTables[0].path.split('token=')[1] || 'qr_ff_table_01_live');
-        }
+        const selectedTableData = tenantTables.find((table) => table.label === selectedTable) || tenantTables[0];
+        setSelectedTable(selectedTableData.label);
+        setCurrentQrToken(
+          selectedTableData.qrCodeToken ||
+            new URL(selectedTableData.path, window.location.origin).searchParams.get('token') ||
+            ''
+        );
       }
       if (tenantOrders.length > 0) setOrders(tenantOrders);
       setManagerBranch(currentTenant.branch);
@@ -422,7 +425,7 @@ export default function App() {
         tableLocation: `${selectedTable} (Terrace)`,
         timePlaced: timePlaced,
         timePlacedAgo: 'Just now',
-        status: 'preparing',
+        status: result.status,
         paymentVerified: false,
         orderType: 'table_qr',
         subtotalUGX: result.subtotal,

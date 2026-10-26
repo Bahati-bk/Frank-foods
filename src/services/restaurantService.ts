@@ -150,6 +150,7 @@ export const restaurantService = {
         id: t.id,
         label: t.table_number,
         locationZone: t.location_zone,
+        qrCodeToken: t.qr_code_token,
         path: `/dine-in?token=${t.qr_code_token}`,
         fullUrl: `https://frankfoods.ug/dine-in?token=${t.qr_code_token}`,
         status: 'occupied',
@@ -161,6 +162,7 @@ export const restaurantService = {
       id: t.id,
       label: t.table_number,
       locationZone: t.location_zone,
+      qrCodeToken: t.qr_code_token,
       path: `/dine-in?token=${t.qr_code_token}`,
       fullUrl: `https://frankfoods.ug/dine-in?token=${t.qr_code_token}`,
       status: 'occupied',
@@ -292,6 +294,12 @@ export const restaurantService = {
     specialInstructions?: string;
     orderType?: 'table' | 'counter';
   }): Promise<GuestOrderResult> {
+    if (!isSupabaseConfigured() && !import.meta.env.DEV) {
+      throw new Error(
+        'Online ordering is unavailable because this site is not connected to Supabase. Please contact the restaurant staff.'
+      );
+    }
+
     if (isSupabaseConfigured() && supabase) {
       const { data, error } = await supabase.rpc('create_guest_order', {
         p_qr_token: params.qrToken,

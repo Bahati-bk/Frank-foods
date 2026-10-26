@@ -168,11 +168,11 @@ The application is pre-configured for deployment on Netlify.
    - **Base directory**: (leave blank / root)
    - **Build command**: `npm run build`
    - **Publish directory**: `dist`
-3. **Environment Variables (Optional for Supabase Cloud)**:
+3. **Environment Variables (Required for live multi-device ordering)**:
    In Netlify Site Settings > **Environment variables**:
    - `VITE_SUPABASE_URL`: Your Supabase project URL (e.g., `https://xyzcompany.supabase.co`)
    - `VITE_SUPABASE_ANON_KEY`: Your Supabase public anonymous API key
-   *(If not provided, the application automatically runs in SQLite WASM device mode with local persistence).*
+   These values are required for customer orders to reach the staff dashboard across devices. Without them, production checkout is disabled rather than saving an order only in the customer's browser. SQLite device mode remains available during local development.
 4. **Deploy Site**:
    - Click **Deploy Site**.
    - Once published, Netlify provides a live URL (e.g., `https://frank-foods.netlify.app`).
