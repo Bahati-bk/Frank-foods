@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dish, TableStand, StaffMember, ShiftPerformance, MenuCategory, Order } from '../../types/dining';
 import { formatUGX } from '../../utils/format';
 import { TableQrPrintModal } from '../common/TableQrPrintModal';
+import { generateUuid } from '../../lib/sqliteDatabase';
 
 interface Props {
   dishes: Dish[];
@@ -177,7 +178,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
     if (!newDishName.trim()) return;
 
     const newDish: Dish = {
-      id: `dish-${Date.now()}`,
+      id: generateUuid(),
       name: newDishName,
       priceUGX: Number(newDishPrice),
       category: newDishCategory,

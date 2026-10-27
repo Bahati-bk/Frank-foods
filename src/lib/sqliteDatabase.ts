@@ -413,6 +413,26 @@ export async function sqliteGetStaffOrders(restaurantId: string): Promise<any[]>
   return orders;
 }
 
+export const LEGACY_DISH_ID_MAP: Record<string, string> = {
+  'dish-smokehouse-burger': '11111111-1000-0000-0000-000000000001',
+  'dish-flame-grilled-chicken': '11111111-1000-0000-0000-000000000002',
+  'dish-beef-pilau': '11111111-1000-0000-0000-000000000003',
+  'dish-masala-fries': '11111111-1000-0000-0000-000000000004',
+  'dish-passion-cooler': '11111111-1000-0000-0000-000000000005',
+  'dish-roasted-tilapia': '11111111-1000-0000-0000-000000000003',
+};
+
+export function generateUuid(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export async function sqliteCreateGuestOrder(params: {
   restaurantId: string;
   qrToken: string;
@@ -459,10 +479,21 @@ export async function sqliteCreateGuestOrder(params: {
   }> = [];
 
   for (const it of params.items) {
-    const itemRows = await querySqlite(
+    let resolvedItemId = it.menu_item_id;
+    let itemRows = await querySqlite(
       'SELECT id, name, price, is_available FROM menu_items WHERE id = ? AND restaurant_id = ?',
-      [it.menu_item_id, params.restaurantId]
+      [resolvedItemId, params.restaurantId]
     );
+
+    // Fallback for legacy dish IDs or renamed items
+    if (itemRows.length === 0 && LEGACY_DISH_ID_MAP[resolvedItemId]) {
+      resolvedItemId = LEGACY_DISH_ID_MAP[resolvedItemId];
+      itemRows = await querySqlite(
+        'SELECT id, name, price, is_available FROM menu_items WHERE id = ? AND restaurant_id = ?',
+        [resolvedItemId, params.restaurantId]
+      );
+    }
+
     if (itemRows.length === 0) {
       throw new Error(`Menu item ${it.menu_item_id} not found.`);
     }
@@ -653,7 +684,7 @@ export async function sqliteGetCategories(restaurantId: string): Promise<any[]> 
 
 export async function sqliteCreateCategory(restaurantId: string, name: string, displayOrder = 0): Promise<any> {
   const db = await getSqliteDb();
-  const id = `cat-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+  const id = generateUuid();
   const now = new Date().toISOString();
   db.run(
     'INSERT INTO menu_categories (id, restaurant_id, name, display_order, is_active, created_at) VALUES (?, ?, ?, ?, 1, ?)',
@@ -698,7 +729,7 @@ export async function sqliteCreateMenuItem(params: {
   isChefChoice?: boolean;
 }): Promise<any> {
   const db = await getSqliteDb();
-  const id = `item-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+  const id = generateUuid();
   const now = new Date().toISOString();
 
   // Get next display order
@@ -784,7 +815,7 @@ export async function sqliteCreateTableStand(params: {
   locationZone: string;
 }): Promise<any> {
   const db = await getSqliteDb();
-  const id = `table-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+  const id = generateUuid();
   const cleanNumber = params.tableNumber.trim();
   const prefix = params.restaurantId.startsWith('1111') ? 'qr_ff' : 'qr_db';
   const cleanToken = `${prefix}_${cleanNumber.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Math.random().toString(36).substring(2, 6)}`;
@@ -872,7 +903,7 @@ export async function sqliteCreateStaffProfile(params: {
   email: string;
 }): Promise<any> {
   const db = await getSqliteDb();
-  const id = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`;
+  const id = generateUuid();
   const now = new Date().toISOString();
   db.run(
     'INSERT INTO profiles (id, restaurant_id, full_name, email, role, is_active, created_at) VALUES (?, ?, ?, ?, ?, 1, ?)',

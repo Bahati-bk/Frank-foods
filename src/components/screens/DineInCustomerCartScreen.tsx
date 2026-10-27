@@ -15,6 +15,7 @@ interface Props {
   onAddToCart: (item: CartItem) => void;
   onUpdateQuantity: (cartItemId: string, delta: number) => void;
   onRemoveItem: (cartItemId: string) => void;
+  onClearCart?: () => void;
   onSubmitOrder: (specialNotes: string) => Promise<void>;
   onSelectScreen: (screenId: string) => void;
   tableNumber?: string;
@@ -31,6 +32,7 @@ export const DineInCustomerCartScreen: React.FC<Props> = ({
   onAddToCart,
   onUpdateQuantity,
   onRemoveItem,
+  onClearCart,
   onSubmitOrder,
   onSelectScreen,
   tableNumber = 'Table 07',
@@ -172,9 +174,26 @@ export const DineInCustomerCartScreen: React.FC<Props> = ({
 
         {/* Global Error Banner */}
         {submitError && (
-          <div className="mx-4 mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">error</span>
-            <span>{submitError}</span>
+          <div className="mx-4 mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex flex-col gap-2 shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[18px] shrink-0">error</span>
+              <span className="flex-1">{submitError}</span>
+            </div>
+            {onClearCart && (
+              <div className="flex items-center justify-end gap-2 pt-1 border-t border-red-200/60">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClearCart();
+                    setSubmitError(null);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+                >
+                  <span className="material-symbols-outlined text-[14px]">refresh</span>
+                  <span>Clear Cart &amp; Re-select Items</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -432,13 +451,25 @@ export const DineInCustomerCartScreen: React.FC<Props> = ({
                       Items to Order ({cartItems.reduce((acc, it) => acc + it.quantity, 0)} total)
                     </h2>
                   </div>
-                  <button
-                    onClick={() => onSelectScreen('menu-feed')}
-                    className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[15px]">add</span>
-                    <span>Add More Items</span>
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {onClearCart && (
+                      <button
+                        onClick={onClearCart}
+                        title="Empty your cart"
+                        className="text-xs font-semibold text-neutral-400 hover:text-red-500 transition-colors flex items-center gap-1 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">delete_sweep</span>
+                        <span>Clear Cart</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => onSelectScreen('menu-feed')}
+                      className="text-xs font-bold text-[#F97316] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">add</span>
+                      <span>Add More Items</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Items List */}

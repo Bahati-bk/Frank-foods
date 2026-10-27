@@ -34,6 +34,7 @@ import { DatabaseManagerModal } from './components/common/DatabaseManagerModal';
 import { restaurantService, TENANTS, TenantId } from './services/restaurantService';
 import { authService } from './services/authService';
 import { pathToScreen, pushAppRoute, ScreenId } from './utils/router';
+import { LEGACY_DISH_ID_MAP } from './lib/sqliteDatabase';
 
 const CART_STORAGE_KEY = 'frank_foods_cart_v3';
 const ACTIVE_ORDER_STORAGE_KEY = 'frank_foods_active_order_v3';
@@ -201,11 +202,60 @@ export default function App() {
       if (dishesRes.status === 'fulfilled' && dishesRes.value.length > 0) {
         const tenantDishes = dishesRes.value;
         setDishes(tenantDishes);
-        const menuDishIds = new Set(tenantDishes.map((dish) => dish.id));
-        const hasStaleCartItems = cartItemsRef.current.some((item) => !menuDishIds.has(item.dishId));
-        if (hasStaleCartItems) {
-          setCartItems((prev) => prev.filter((item) => menuDishIds.has(item.dishId)));
-          setErrorMessage('Your saved cart contained items from an older menu. They were removed; please add items from the refreshed menu.');
+        const menuDishMap = new Map(tenantDishes.map((dish) => [dish.id, dish]));
+
+        let cartModified = false;
+        const healedCart: CartItem[] = [];
+
+        for (const item of cartItemsRef.current) {
+          if (menuDishMap.has(item.dishId)) {
+            const currentDish = menuDishMap.get(item.dishId)!;
+            if (currentDish.stockStatus === 'sold_out') {
+              cartModified = true;
+            } else {
+              healedCart.push(item);
+            }
+          } else {
+            // Check legacy dish id mapping
+            const mappedId = LEGACY_DISH_ID_MAP[item.dishId];
+            if (mappedId && menuDishMap.has(mappedId)) {
+              const currentDish = menuDishMap.get(mappedId)!;
+              if (currentDish.stockStatus !== 'sold_out') {
+                healedCart.push({
+                  ...item,
+                  dishId: currentDish.id,
+                  name: currentDish.name,
+                  image: currentDish.image || item.image,
+                });
+                cartModified = true;
+                continue;
+              }
+            }
+
+            // Check by name similarity
+            const matchedByName = tenantDishes.find((d) =>
+              d.name.toLowerCase().includes(item.name.toLowerCase()) ||
+              item.name.toLowerCase().includes(d.name.toLowerCase())
+            );
+            if (matchedByName && matchedByName.stockStatus !== 'sold_out') {
+              healedCart.push({
+                ...item,
+                dishId: matchedByName.id,
+                name: matchedByName.name,
+                image: matchedByName.image || item.image,
+              });
+              cartModified = true;
+            } else {
+              cartModified = true;
+            }
+          }
+        }
+
+        if (cartModified) {
+          setCartItems(healedCart);
+          try {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(healedCart));
+          } catch {}
         }
       }
 
@@ -445,21 +495,85 @@ export default function App() {
   // Submit Order: Server/database-authoritative price calculation & unique ticket generation
   const handleSubmitOrder = async (specialNotes: string) => {
     if (cartItems.length === 0) {
-      throw new Error('Your cart is empty.');
-    }
-    const hasInvalidMenuItemId = cartItems.some((item) =>
-      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(item.dishId)
-    );
-    if (hasInvalidMenuItemId) {
-      throw new Error(
-        'Your cart contains items from an older menu. Clear the cart, refresh the menu, and add the items again.'
-      );
+      throw new Error('Your cart is empty. Please select dishes from the menu before ordering.');
     }
 
     setIsSubmittingOrder(true);
     setErrorMessage(null);
 
     try {
+      // Reconcile cart items with current tenant menu dishes
+      let currentDishes = dishes;
+      try {
+        const liveDishes = await restaurantService.getMenuDishes(activeTenantId);
+        if (liveDishes.length > 0) {
+          currentDishes = liveDishes;
+          setDishes(liveDishes);
+        }
+      } catch (err) {
+        console.warn('Could not refresh dishes during order placement, using cached dishes:', err);
+      }
+
+      const dishMap = new Map(currentDishes.map((d) => [d.id, d]));
+      const reconciledCart: CartItem[] = [];
+
+      for (const item of cartItems) {
+        if (dishMap.has(item.dishId)) {
+          const matched = dishMap.get(item.dishId)!;
+          if (matched.stockStatus !== 'sold_out') {
+            reconciledCart.push(item);
+          }
+        } else {
+          // Check legacy dish id mapping
+          const mappedId = LEGACY_DISH_ID_MAP[item.dishId];
+          if (mappedId && dishMap.has(mappedId)) {
+            const currentDish = dishMap.get(mappedId)!;
+            if (currentDish.stockStatus !== 'sold_out') {
+              reconciledCart.push({
+                ...item,
+                dishId: currentDish.id,
+                name: currentDish.name,
+                image: currentDish.image || item.image,
+              });
+              continue;
+            }
+          }
+
+          // Check by name similarity
+          const matched = currentDishes.find((d) => {
+            const a = d.name.toLowerCase();
+            const b = item.name.toLowerCase();
+            return a.includes(b) || b.includes(a);
+          });
+          if (matched && matched.stockStatus !== 'sold_out') {
+            reconciledCart.push({
+              ...item,
+              dishId: matched.id,
+              name: matched.name,
+              image: matched.image || item.image,
+            });
+          }
+        }
+      }
+
+      if (reconciledCart.length === 0) {
+        handleClearCart();
+        throw new Error(
+          'Your saved cart contained items from a previous menu version. We have refreshed your cart so you can add items from the current menu.'
+        );
+      }
+
+      // Sync state if items were updated or reconciled
+      if (
+        reconciledCart.length !== cartItems.length ||
+        reconciledCart.some((it, idx) => it.dishId !== cartItems[idx]?.dishId)
+      ) {
+        setCartItems(reconciledCart);
+        try {
+          localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(reconciledCart));
+        } catch {}
+      }
+
       const tableMatch = tables.find((t) => t.label === selectedTable);
       const tableToken =
         tableMatch?.qrCodeToken ||
@@ -472,7 +586,7 @@ export default function App() {
         throw new Error('Could not find an active QR code for this table. Please select your table again.');
       }
 
-      const itemsPayload = cartItems.map((it) => {
+      const itemsPayload = reconciledCart.map((it) => {
         const extraNames = it.selectedExtras.map((e) => e.name).join(', ');
         const notes = [it.cookPreference, extraNames, it.specialInstructions].filter(Boolean).join(' • ');
         return {
@@ -508,7 +622,7 @@ export default function App() {
         guestAccessToken: result.guest_access_token,
         restaurantName: currentTenant.name,
         createdAt: now.toISOString(),
-        items: cartItems.map((it) => ({
+        items: reconciledCart.map((it) => ({
           name: `${it.quantity}x ${it.name}`,
           details: [it.cookPreference, it.selectedExtras.map((e) => e.name).join(', '), it.specialInstructions]
             .filter(Boolean)
@@ -933,6 +1047,7 @@ export default function App() {
             onAddToCart={handleAddToCart}
             onUpdateQuantity={handleUpdateCartQuantity}
             onRemoveItem={handleRemoveFromCart}
+            onClearCart={handleClearCart}
             onSubmitOrder={handleSubmitOrder}
             onSelectScreen={(screen) => handleNavigateScreen(screen as ScreenId)}
             tableNumber={selectedTable}

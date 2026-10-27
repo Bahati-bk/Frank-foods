@@ -51,7 +51,7 @@ export const DineInMenuFeedScreen: React.FC<Props> = ({
   const filteredDishes = dishes.filter((dish) => {
     // Category filter
     if (selectedCategory === 'Popular Specials') {
-      if (!dish.chefChoice && dish.id !== 'dish-flame-grilled-chicken') return false;
+      if (!dish.chefChoice && !dish.name.toLowerCase().includes('chicken') && !dish.name.toLowerCase().includes('burger')) return false;
     } else if (selectedCategory === 'Flame Grills') {
       if (dish.category !== 'Grills') return false;
     } else if (selectedCategory === 'Burgers') {
@@ -248,7 +248,7 @@ export const DineInMenuFeedScreen: React.FC<Props> = ({
           <div className="space-y-3.5 pt-1">
             {filteredDishes.map((dish) => {
               const isAvailable = dish.stockStatus === 'available';
-              const isPopular = dish.id === 'dish-flame-grilled-chicken';
+              const isPopular = dish.id === '11111111-1000-0000-0000-000000000002' || dish.name.toLowerCase().includes('peri-peri');
               const isChefChoice = dish.chefChoice;
 
               return (
