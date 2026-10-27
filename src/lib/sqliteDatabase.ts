@@ -200,9 +200,43 @@ VALUES
 `;
 
 /**
+ * SQLite should ONLY run if VITE_SHARED_API_ENABLED is explicitly "false" or missing.
+ * It must be completely bypassed and never execute when the app is in production/API mode.
+ */
+export function isSqliteAllowed(): boolean {
+  let sharedApi: any;
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta.env) {
+      sharedApi = import.meta.env.VITE_SHARED_API_ENABLED;
+    }
+  } catch {}
+  if (sharedApi === undefined) {
+    try {
+      if (typeof process !== 'undefined' && process.env) {
+        sharedApi = process.env.VITE_SHARED_API_ENABLED;
+      }
+    } catch {}
+  }
+
+  if (!sharedApi) return true;
+  if (sharedApi === true) return false;
+  const str = String(sharedApi).trim().toLowerCase();
+  if (str === 'true' || str === '1') {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Initialize SQLite WebAssembly Database on device
  */
 export async function getSqliteDb(): Promise<Database> {
+  if (!isSqliteAllowed()) {
+    throw new Error(
+      'SQLite initialization bypassed: VITE_SHARED_API_ENABLED is "true" (production/API mode).'
+    );
+  }
+
   if (SQLITE_DB) {
     return SQLITE_DB;
   }
@@ -280,6 +314,12 @@ export function persistSqliteDb(dbInstance?: Database) {
  * Reset SQLite Database to initial clean seed state
  */
 export async function resetSqliteDb(): Promise<Database> {
+  if (!isSqliteAllowed()) {
+    throw new Error(
+      'SQLite initialization bypassed: VITE_SHARED_API_ENABLED is "true" (production/API mode).'
+    );
+  }
+
   if (!SQL_ENGINE) {
     SQL_ENGINE = await initSqlJs({
       locateFile: (file) => (file.endsWith('.wasm') ? '/sql-wasm.wasm' : file),
@@ -298,6 +338,9 @@ export async function resetSqliteDb(): Promise<Database> {
  * Export SQLite binary .db file for download or local inspection
  */
 export async function exportSqliteDbBinary(): Promise<Uint8Array> {
+  if (!isSqliteAllowed()) {
+    throw new Error('SQLite export unavailable in production/API mode.');
+  }
   const db = await getSqliteDb();
   return db.export();
 }
@@ -306,6 +349,9 @@ export async function exportSqliteDbBinary(): Promise<Uint8Array> {
  * Execute custom SQL query on SQLite database
  */
 export async function querySqlite(sql: string, params: any[] = []): Promise<Array<Record<string, any>>> {
+  if (!isSqliteAllowed()) {
+    return [];
+  }
   const db = await getSqliteDb();
   const stmt = db.prepare(sql);
   try {

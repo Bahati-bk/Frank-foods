@@ -5,9 +5,40 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
+const getEnvVar = (name: string): string | undefined => {
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[name] !== undefined) {
+      return import.meta.env[name];
+    }
+  } catch {}
+  try {
+    if (typeof process !== 'undefined' && process.env && process.env[name] !== undefined) {
+      return process.env[name];
+    }
+  } catch {}
+  return undefined;
+};
+
 // Environment variables for Supabase project
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+const rawSupabaseUrl = getEnvVar('VITE_SUPABASE_URL');
+export const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
+
+// Auto-correct common typos in Supabase project hostname (e.g. xbatvm... -> xbaltvm...)
+export const supabaseUrl = rawSupabaseUrl
+  ? rawSupabaseUrl.replace('xbatvmjdrynrtugapul', 'xbaltvmjdrynrtugapul')
+  : undefined;
+
+/**
+ * Check if shared API mode is enabled.
+ * Handles "true", "True", "1", or boolean true across browser Vite and Node environments.
+ */
+export const isSharedApiEnabled = (): boolean => {
+  const flag = getEnvVar('VITE_SHARED_API_ENABLED');
+  if (!flag) return false;
+  if ((flag as any) === true) return true;
+  const str = String(flag).trim().toLowerCase();
+  return str === 'true' || str === '1';
+};
 
 export const isSupabaseConfigured = (): boolean => {
   return Boolean(
@@ -24,6 +55,9 @@ let lastSupabaseFailureTime = 0;
 const RETRY_COOLDOWN_MS = 60000; // Wait 60s before retesting remote connection
 
 export const isSupabaseLive = (): boolean => {
+  if (isSharedApiEnabled()) {
+    return Boolean(supabaseUrl && supabaseAnonKey && supabaseReachable);
+  }
   if (!isSupabaseConfigured()) return false;
   if (!supabaseReachable) {
     if (Date.now() - lastSupabaseFailureTime > RETRY_COOLDOWN_MS) {
