@@ -106,6 +106,30 @@ export interface GuestOrderDetails {
   payment_verified: boolean;
 }
 
+class ServiceRequestTimeoutError extends Error {
+  constructor() {
+    super('The restaurant server did not respond in time.');
+    this.name = 'ServiceRequestTimeoutError';
+  }
+}
+
+async function withSupabaseRequestTimeout<T>(
+  timeoutMs: number,
+  request: (signal: AbortSignal) => PromiseLike<T>
+): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await request(controller.signal);
+  } catch (error) {
+    if (controller.signal.aborted) throw new ServiceRequestTimeoutError();
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 // ----------------------------------------------------------------------------
 // Restaurant Service Layer (Powered by SQLite on-device & Supabase cloud)
 // ----------------------------------------------------------------------------
@@ -340,21 +364,25 @@ export const restaurantService = {
 
     if (isSharedApi || (isSupabaseLive() && supabase)) {
       if (supabase) {
+        const client = supabase;
         try {
-          const { data, error } = await supabase
-            .from('menu_items')
-            .select(`
-              id,
-              name,
-              description,
-              price,
-              image_url,
-              preparation_time_minutes,
-              is_available,
-              category:menu_categories(name)
-            `)
-            .eq('restaurant_id', tenantId)
-            .order('display_order');
+          const { data, error } = await withSupabaseRequestTimeout(8000, (signal) =>
+            client
+              .from('menu_items')
+              .select(`
+                id,
+                name,
+                description,
+                price,
+                image_url,
+                preparation_time_minutes,
+                is_available,
+                category:menu_categories(name)
+              `)
+              .eq('restaurant_id', tenantId)
+              .order('display_order')
+              .abortSignal(signal)
+          );
 
           if (error) throw error;
           if (data && data.length > 0) {
@@ -420,13 +448,16 @@ export const restaurantService = {
         );
       }
 
+      const client = supabase;
       try {
-        const { data, error } = await supabase.rpc('create_guest_order', {
-          p_qr_token: params.qrToken,
-          p_items: params.items,
-          p_special_instructions: params.specialInstructions || null,
-          p_order_type: params.orderType || 'table',
-        });
+        const { data, error } = await withSupabaseRequestTimeout(20000, (signal) =>
+          client.rpc('create_guest_order', {
+            p_qr_token: params.qrToken,
+            p_items: params.items,
+            p_special_instructions: params.specialInstructions || null,
+            p_order_type: params.orderType || 'table',
+          }).abortSignal(signal)
+        );
 
         if (error) throw error;
         if (data) {
@@ -434,6 +465,11 @@ export const restaurantService = {
           return data as GuestOrderResult;
         }
       } catch (err: any) {
+        if (err instanceof ServiceRequestTimeoutError) {
+          throw new Error(
+            'Order confirmation timed out. The restaurant may still have received it. Please check with staff before submitting again.'
+          );
+        }
         // In shared API mode, do not write to SQLite; surface the API error directly
         if (isSharedApi) {
           console.error('[RestaurantService] Supabase create_guest_order failed in production API mode:', err);
