@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS public.payments (
     restaurant_id UUID NOT NULL REFERENCES public.restaurants(id) ON DELETE RESTRICT,
     order_id UUID NOT NULL,
     amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 0),
-    method VARCHAR(20) NOT NULL CHECK (method IN ('cash', 'mtn_momo', 'airtel_money')),
+    method VARCHAR(32) NOT NULL CHECK (method IN ('cash', 'mtn_momo', 'airtel_money', 'card', 'Cash', 'MTN MoMo', 'Airtel Money', 'Card')),
     status VARCHAR(20) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'verified', 'failed', 'refunded')),
     reference TEXT,

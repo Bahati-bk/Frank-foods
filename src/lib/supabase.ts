@@ -19,6 +19,31 @@ export const isSupabaseConfigured = (): boolean => {
   );
 };
 
+let supabaseReachable = true;
+let lastSupabaseFailureTime = 0;
+const RETRY_COOLDOWN_MS = 60000; // Wait 60s before retesting remote connection
+
+export const isSupabaseLive = (): boolean => {
+  if (!isSupabaseConfigured()) return false;
+  if (!supabaseReachable) {
+    if (Date.now() - lastSupabaseFailureTime > RETRY_COOLDOWN_MS) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+};
+
+export const markSupabaseUnavailable = (err?: unknown) => {
+  supabaseReachable = false;
+  lastSupabaseFailureTime = Date.now();
+  console.warn('[Supabase] Remote database unreachable, falling back to on-device relational SQLite:', err);
+};
+
+export const markSupabaseHealthy = () => {
+  supabaseReachable = true;
+};
+
 /**
  * Live Supabase Client instance (when env variables are provided)
  */
@@ -113,7 +138,7 @@ export interface DbPayment {
   restaurant_id: string;
   order_id: string;
   amount: number;
-  method: 'Cash' | 'MTN MoMo' | 'Airtel Money';
+  method: 'Cash' | 'MTN MoMo' | 'Airtel Money' | 'Card';
   status: 'pending' | 'verified' | 'failed' | 'refunded';
   reference?: string | null;
   verified_by?: string | null;

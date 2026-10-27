@@ -182,14 +182,14 @@ The application is pre-configured for deployment on Netlify.
 
 ## 8. Automated Verification & Testing
 
-To run the automated 9-scenario test suite verifying tenant isolation, QR token resolution, authoritative pricing, KDS transitions, card payment, and staff provisioning:
+To run the automated 10-scenario test suite verifying tenant isolation, QR token resolution, authoritative pricing, KDS transitions, card payment, staff provisioning, and live order tracking:
 
 ```bash
 npm test
 # or: npx tsx scripts/testCustomerOrdering.ts
 ```
 
-All 9 tests execute against the embedded database engine and output verified results:
+All 10 tests execute against the embedded database engine and output verified results:
 - **Test 1**: Menu Tenant Isolation
 - **Test 2**: QR Table Token Resolution & Inactive Token Rejection
 - **Test 3**: Unavailable (86-ed) Dish Rejection
@@ -199,3 +199,4 @@ All 9 tests execute against the embedded database engine and output verified res
 - **Test 7**: Dine-In Progression & Pay-At-The-End with Card
 - **Test 8**: Kitchen KDS Workflow & Authorized Cancellation Audit
 - **Test 9**: Multi-Restaurant Table Stand QR & Staff Provisioning
+- **Test 10**: Real-Time Kitchen Status Progression on Customer Order Tracker

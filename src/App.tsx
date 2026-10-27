@@ -180,7 +180,14 @@ export default function App() {
   // Load tenant-isolated data whenever tenant changes
   const loadTenantData = useCallback(async () => {
     try {
-      const [tenantDishes, tenantTables, tenantOrders, tenantCategories, tenantStaff, tenantStats] = await Promise.all([
+      const [
+        dishesRes,
+        tablesRes,
+        ordersRes,
+        categoriesRes,
+        staffRes,
+        statsRes,
+      ] = await Promise.allSettled([
         restaurantService.getMenuDishes(activeTenantId),
         restaurantService.getTables(activeTenantId),
         restaurantService.getStaffOrders(activeTenantId),
@@ -191,7 +198,8 @@ export default function App() {
 
       if (activeTenantIdRef.current !== activeTenantId) return;
 
-      if (tenantDishes.length > 0) {
+      if (dishesRes.status === 'fulfilled' && dishesRes.value.length > 0) {
+        const tenantDishes = dishesRes.value;
         setDishes(tenantDishes);
         const menuDishIds = new Set(tenantDishes.map((dish) => dish.id));
         const hasStaleCartItems = cartItemsRef.current.some((item) => !menuDishIds.has(item.dishId));
@@ -200,11 +208,21 @@ export default function App() {
           setErrorMessage('Your saved cart contained items from an older menu. They were removed; please add items from the refreshed menu.');
         }
       }
-      if (tenantCategories.length > 0) setCategories(tenantCategories);
-      if (tenantStaff.length > 0) setStaff(tenantStaff);
-      if (tenantStats) setShiftStats(tenantStats);
 
-      if (tenantTables.length > 0) {
+      if (categoriesRes.status === 'fulfilled' && categoriesRes.value.length > 0) {
+        setCategories(categoriesRes.value);
+      }
+
+      if (staffRes.status === 'fulfilled' && staffRes.value.length > 0) {
+        setStaff(staffRes.value);
+      }
+
+      if (statsRes.status === 'fulfilled' && statsRes.value) {
+        setShiftStats(statsRes.value);
+      }
+
+      if (tablesRes.status === 'fulfilled' && tablesRes.value.length > 0) {
+        const tenantTables = tablesRes.value;
         setTables(tenantTables);
         const selectedTableData = tenantTables.find((table) => table.label === selectedTable) || tenantTables[0];
         setSelectedTable(selectedTableData.label);
@@ -214,7 +232,11 @@ export default function App() {
             ''
         );
       }
-      if (tenantOrders.length > 0) setOrders(tenantOrders);
+
+      if (ordersRes.status === 'fulfilled' && ordersRes.value.length > 0) {
+        setOrders(ordersRes.value);
+      }
+
       setManagerBranch(currentTenant.branch);
     } catch (err: any) {
       console.error('Failed to load tenant data:', err);

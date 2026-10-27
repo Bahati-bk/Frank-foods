@@ -3,7 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { supabase, isSupabaseConfigured, DbRestaurant, DbRestaurantTable } from '../lib/supabase';
+import {
+  supabase,
+  isSupabaseConfigured,
+  isSupabaseLive,
+  markSupabaseUnavailable,
+  markSupabaseHealthy,
+  DbRestaurant,
+  DbRestaurantTable,
+} from '../lib/supabase';
 import {
   sqliteGetRestaurants,
   sqliteGetTables,
@@ -106,15 +114,22 @@ export const restaurantService = {
    * Fetch restaurant details
    */
   async getRestaurant(tenantId: TenantId): Promise<DbRestaurant> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase
-        .from('restaurants')
-        .select('*')
-        .eq('id', tenantId)
-        .single();
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('restaurants')
+          .select('*')
+          .eq('id', tenantId)
+          .single();
 
-      if (error) throw new Error(`Supabase error: ${error.message}`);
-      return data as DbRestaurant;
+        if (error) throw error;
+        if (data) {
+          markSupabaseHealthy();
+          return data as DbRestaurant;
+        }
+      } catch (err) {
+        markSupabaseUnavailable(err);
+      }
     }
 
     const rows = await sqliteGetRestaurants();
@@ -137,24 +152,31 @@ export const restaurantService = {
    * Fetch active tables for a restaurant from SQLite/Supabase
    */
   async getTables(tenantId: TenantId): Promise<TableStand[]> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase
-        .from('restaurant_tables')
-        .select('*')
-        .eq('restaurant_id', tenantId)
-        .eq('is_active', true)
-        .order('table_number');
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('restaurant_tables')
+          .select('*')
+          .eq('restaurant_id', tenantId)
+          .eq('is_active', true)
+          .order('table_number');
 
-      if (error) throw new Error(`Supabase error: ${error.message}`);
-      return (data || []).map((t: DbRestaurantTable) => ({
-        id: t.id,
-        label: t.table_number,
-        locationZone: t.location_zone,
-        qrCodeToken: t.qr_code_token,
-        path: `/dine-in?token=${t.qr_code_token}`,
-        fullUrl: `https://frankfoods.ug/dine-in?token=${t.qr_code_token}`,
-        status: 'occupied',
-      }));
+        if (error) throw error;
+        if (data && data.length > 0) {
+          markSupabaseHealthy();
+          return data.map((t: DbRestaurantTable) => ({
+            id: t.id,
+            label: t.table_number,
+            locationZone: t.location_zone,
+            qrCodeToken: t.qr_code_token,
+            path: `/dine-in?token=${t.qr_code_token}`,
+            fullUrl: `https://frankfoods.ug/dine-in?token=${t.qr_code_token}`,
+            status: 'occupied',
+          }));
+        }
+      } catch (err) {
+        markSupabaseUnavailable(err);
+      }
     }
 
     const rows = await sqliteGetTables(tenantId);
@@ -181,38 +203,44 @@ export const restaurantService = {
     restaurant_slug: string;
     currency: string;
   }> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase
-        .from('restaurant_tables')
-        .select(`
-          id,
-          table_number,
-          location_zone,
-          restaurant_id,
-          restaurant:restaurants(name, slug, currency, is_active)
-        `)
-        .eq('qr_code_token', qrToken)
-        .eq('is_active', true)
-        .single();
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('restaurant_tables')
+          .select(`
+            id,
+            table_number,
+            location_zone,
+            restaurant_id,
+            restaurant:restaurants(name, slug, currency, is_active)
+          `)
+          .eq('qr_code_token', qrToken)
+          .eq('is_active', true)
+          .single();
 
-      if (error || !data) {
-        throw new Error(`Invalid or inactive table QR code token: "${qrToken}"`);
+        if (!error && data) {
+          const rest: any = data.restaurant;
+          if (!rest || !rest.is_active) {
+            throw new Error('This restaurant is currently not accepting orders.');
+          }
+
+          markSupabaseHealthy();
+          return {
+            table_id: data.id,
+            table_number: data.table_number,
+            location_zone: data.location_zone,
+            restaurant_id: data.restaurant_id,
+            restaurant_name: rest.name,
+            restaurant_slug: rest.slug,
+            currency: rest.currency || 'UGX',
+          };
+        }
+      } catch (err: any) {
+        if (err.message === 'This restaurant is currently not accepting orders.') {
+          throw err;
+        }
+        markSupabaseUnavailable(err);
       }
-
-      const rest: any = data.restaurant;
-      if (!rest || !rest.is_active) {
-        throw new Error('This restaurant is currently not accepting orders.');
-      }
-
-      return {
-        table_id: data.id,
-        table_number: data.table_number,
-        location_zone: data.location_zone,
-        restaurant_id: data.restaurant_id,
-        restaurant_name: rest.name,
-        restaurant_slug: rest.slug,
-        currency: rest.currency || 'UGX',
-      };
     }
 
     return await sqliteResolveTableByQrToken(qrToken);
@@ -222,12 +250,19 @@ export const restaurantService = {
    * Toggle server alert on active order
    */
   async setServerAlert(orderId: string, active: boolean): Promise<void> {
-    if (isSupabaseConfigured() && supabase) {
-      await supabase
-        .from('orders')
-        .update({ server_alert_active: active })
-        .eq('id', orderId);
-      return;
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { error } = await supabase
+          .from('orders')
+          .update({ server_alert_active: active })
+          .eq('id', orderId);
+        if (!error) {
+          markSupabaseHealthy();
+          return;
+        }
+      } catch (err) {
+        markSupabaseUnavailable(err);
+      }
     }
 
     await sqliteSetServerAlert(orderId, active);
@@ -237,34 +272,41 @@ export const restaurantService = {
    * Fetch menu items for a restaurant (maps to UI Dish type)
    */
   async getMenuDishes(tenantId: TenantId): Promise<Dish[]> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase
-        .from('menu_items')
-        .select(`
-          id,
-          name,
-          description,
-          price,
-          image_url,
-          preparation_time_minutes,
-          is_available,
-          category:menu_categories(name)
-        `)
-        .eq('restaurant_id', tenantId)
-        .order('display_order');
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('menu_items')
+          .select(`
+            id,
+            name,
+            description,
+            price,
+            image_url,
+            preparation_time_minutes,
+            is_available,
+            category:menu_categories(name)
+          `)
+          .eq('restaurant_id', tenantId)
+          .order('display_order');
 
-      if (error) throw new Error(`Supabase error: ${error.message}`);
-      return (data || []).map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        category: (item.category?.name || 'Burgers') as any,
-        priceUGX: Number(item.price),
-        prepTimeText: `${item.preparation_time_minutes || 15} MIN PREP`,
-        description: item.description,
-        image: item.image_url || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
-        stockStatus: item.is_available ? 'available' : 'sold_out',
-        pauseReason: item.is_available ? undefined : 'Paused by shift manager',
-      }));
+        if (error) throw error;
+        if (data && data.length > 0) {
+          markSupabaseHealthy();
+          return data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            category: (item.category?.name || 'Burgers') as any,
+            priceUGX: Number(item.price),
+            prepTimeText: `${item.preparation_time_minutes || 15} MIN PREP`,
+            description: item.description,
+            image: item.image_url || 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
+            stockStatus: item.is_available ? 'available' : 'sold_out',
+            pauseReason: item.is_available ? undefined : 'Paused by shift manager',
+          }));
+        }
+      } catch (err) {
+        markSupabaseUnavailable(err);
+      }
     }
 
     const rows = await sqliteGetMenuItems(tenantId);
@@ -292,24 +334,24 @@ export const restaurantService = {
     specialInstructions?: string;
     orderType?: 'table' | 'counter';
   }): Promise<GuestOrderResult> {
-    if (!isSupabaseConfigured() && !import.meta.env.DEV) {
-      throw new Error(
-        'Online ordering is unavailable because this site is not connected to Supabase. Please contact the restaurant staff.'
-      );
-    }
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase.rpc('create_guest_order', {
+          p_qr_token: params.qrToken,
+          p_items: params.items,
+          p_special_instructions: params.specialInstructions || null,
+          p_order_type: params.orderType || 'table',
+        });
 
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase.rpc('create_guest_order', {
-        p_qr_token: params.qrToken,
-        p_items: params.items,
-        p_special_instructions: params.specialInstructions || null,
-        p_order_type: params.orderType || 'table',
-      });
-
-      if (error) {
-        throw new Error(error.message);
+        if (error) throw error;
+        if (data) {
+          markSupabaseHealthy();
+          return data as GuestOrderResult;
+        }
+      } catch (err: any) {
+        markSupabaseUnavailable(err);
+        console.warn('[RestaurantService] Supabase placeGuestOrder failed, falling back to local SQLite:', err);
       }
-      return data as GuestOrderResult;
     }
 
     const result = await sqliteCreateGuestOrder({
@@ -337,14 +379,22 @@ export const restaurantService = {
    * Track guest order using guest access token
    */
   async trackGuestOrder(orderId: string, guestAccessToken: string): Promise<GuestOrderDetails> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase.rpc('get_guest_order', {
-        p_order_id: orderId,
-        p_guest_access_token: guestAccessToken,
-      });
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase.rpc('get_guest_order', {
+          p_order_id: orderId,
+          p_guest_access_token: guestAccessToken,
+        });
 
-      if (error) throw new Error(`Unauthorized or order not found: ${error.message}`);
-      return data as GuestOrderDetails;
+        if (error) throw error;
+        if (data) {
+          markSupabaseHealthy();
+          return data as GuestOrderDetails;
+        }
+      } catch (err: any) {
+        markSupabaseUnavailable(err);
+        console.warn('[RestaurantService] Supabase trackGuestOrder failed, falling back to local SQLite:', err);
+      }
     }
 
     const ord = await sqliteGetGuestOrder(orderId, guestAccessToken);
@@ -377,56 +427,64 @@ export const restaurantService = {
    * Fetch active orders for staff dashboard from SQLite or Supabase
    */
   async getStaffOrders(tenantId: TenantId): Promise<Order[]> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          id,
-          order_number,
-          order_type,
-          status,
-          payment_status,
-          subtotal,
-          total,
-          special_instructions,
-          created_at,
-          table:restaurant_tables(table_number, location_zone),
-          items:order_items(item_name, unit_price, quantity, line_total, special_instructions),
-          payments(method, verified_by, status)
-        `)
-        .eq('restaurant_id', tenantId)
-        .order('created_at', { ascending: false });
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select(`
+            id,
+            order_number,
+            order_type,
+            status,
+            payment_status,
+            subtotal,
+            total,
+            special_instructions,
+            created_at,
+            table:restaurant_tables(table_number, location_zone),
+            items:order_items(item_name, unit_price, quantity, line_total, special_instructions),
+            payments(method, verified_by, status)
+          `)
+          .eq('restaurant_id', tenantId)
+          .order('created_at', { ascending: false });
 
-      if (error) throw new Error(`Supabase error: ${error.message}`);
+        if (error) throw error;
 
-      return (data || []).map((o: any) => {
-        const timePlaced = new Date(o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const minutesAgo = Math.max(1, Math.round((Date.now() - new Date(o.created_at).getTime()) / 60000));
-        const payment = o.payments?.[0];
+        if (data) {
+          markSupabaseHealthy();
+          return data.map((o: any) => {
+            const timePlaced = new Date(o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const minutesAgo = Math.max(1, Math.round((Date.now() - new Date(o.created_at).getTime()) / 60000));
+            const payment = o.payments?.[0];
 
-        return {
-          id: o.id,
-          orderNumber: o.order_number,
-          tableNumber: o.table?.table_number || 'Counter',
-          tableLocation: o.table ? `${o.table.table_number} (${o.table.location_zone})` : 'Counter Walk-Up',
-          timePlaced,
-          timePlacedAgo: `${minutesAgo}m ago`,
-          status: o.status as OrderStatus,
-          paymentVerified: o.payment_status === 'paid',
-          paymentMethod: payment?.method as PaymentMethod | undefined,
-          verifiedBy: payment?.verified_by || undefined,
-          orderType: o.order_type === 'counter' ? 'counter_walk_in' : 'table_qr',
-          items: (o.items || []).map((it: any) => ({
-            name: it.item_name,
-            details: it.special_instructions || 'Standard prep',
-            quantity: it.quantity,
-            priceUGX: Number(it.line_total),
-          })),
-          specialInstructions: o.special_instructions || undefined,
-          subtotalUGX: Number(o.subtotal),
-          totalUGX: Number(o.total),
-        };
-      });
+            return {
+              id: o.id,
+              orderNumber: o.order_number,
+              tableNumber: o.table?.table_number || 'Counter',
+              tableLocation: o.table ? `${o.table.table_number} (${o.table.location_zone})` : 'Counter Walk-Up',
+              timePlaced,
+              timePlacedAgo: `${minutesAgo}m ago`,
+              status: o.status as OrderStatus,
+              paymentVerified: o.payment_status === 'paid',
+              paymentMethod: payment?.method as PaymentMethod | undefined,
+              verifiedBy: payment?.verified_by || undefined,
+              orderType: o.order_type === 'counter' ? 'counter_walk_in' : 'table_qr',
+              items: (o.items || []).map((it: any) => ({
+                name: it.item_name,
+                details: it.special_instructions || 'Standard prep',
+                quantity: it.quantity,
+                priceUGX: Number(it.line_total),
+              })),
+              specialInstructions: o.special_instructions || undefined,
+              subtotalUGX: Number(o.subtotal),
+              totalUGX: Number(o.total),
+            };
+          });
+        }
+      } catch (err: any) {
+        markSupabaseUnavailable(err);
+        console.warn('[RestaurantService] Supabase getStaffOrders failed, falling back to local SQLite:', err);
+      }
     }
 
     const rows = await sqliteGetStaffOrders(tenantId);
@@ -469,17 +527,23 @@ export const restaurantService = {
     reference?: string;
     notes?: string;
   }): Promise<void> {
-    if (isSupabaseConfigured() && supabase) {
-      const { error } = await supabase.rpc('verify_staff_payment', {
-        p_order_id: params.orderId,
-        p_method: params.method,
-        p_amount: null,
-        p_reference: params.reference || null,
-        p_notes: params.notes || null,
-      });
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { error } = await supabase.rpc('verify_staff_payment', {
+          p_order_id: params.orderId,
+          p_method: params.method,
+          p_amount: null,
+          p_reference: params.reference || null,
+          p_notes: params.notes || null,
+        });
 
-      if (error) throw new Error(`Payment verification failed: ${error.message}`);
-      return;
+        if (error) throw error;
+        markSupabaseHealthy();
+        return;
+      } catch (err: any) {
+        markSupabaseUnavailable(err);
+        console.warn('[RestaurantService] Supabase verifyPayment failed, falling back to local SQLite:', err);
+      }
     }
 
     await sqliteVerifyStaffPayment({
@@ -499,14 +563,20 @@ export const restaurantService = {
     orderId: string;
     newStatus: OrderStatus;
   }): Promise<void> {
-    if (isSupabaseConfigured() && supabase) {
-      const { error } = await supabase.rpc('advance_order_status', {
-        p_order_id: params.orderId,
-        p_new_status: params.newStatus,
-      });
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { error } = await supabase.rpc('advance_order_status', {
+          p_order_id: params.orderId,
+          p_new_status: params.newStatus,
+        });
 
-      if (error) throw new Error(error.message);
-      return;
+        if (error) throw error;
+        markSupabaseHealthy();
+        return;
+      } catch (err: any) {
+        markSupabaseUnavailable(err);
+        console.warn('[RestaurantService] Supabase advanceOrderStatus failed, falling back to local SQLite:', err);
+      }
     }
 
     await sqliteAdvanceOrderStatus({
@@ -520,25 +590,31 @@ export const restaurantService = {
    * Toggle menu item availability (86-ing) in SQLite or Supabase
    */
   async toggleMenuItemAvailability(tenantId: TenantId, menuItemId: string): Promise<boolean> {
-    if (isSupabaseConfigured() && supabase) {
-      const { data: item, error: fetchErr } = await supabase
-        .from('menu_items')
-        .select('is_available')
-        .eq('id', menuItemId)
-        .eq('restaurant_id', tenantId)
-        .single();
+    if (isSupabaseLive() && supabase) {
+      try {
+        const { data: item, error: fetchErr } = await supabase
+          .from('menu_items')
+          .select('is_available')
+          .eq('id', menuItemId)
+          .eq('restaurant_id', tenantId)
+          .single();
 
-      if (fetchErr || !item) throw new Error('Menu item not found');
+        if (fetchErr || !item) throw fetchErr || new Error('Menu item not found');
 
-      const nextState = !item.is_available;
-      const { error: updateErr } = await supabase
-        .from('menu_items')
-        .update({ is_available: nextState })
-        .eq('id', menuItemId)
-        .eq('restaurant_id', tenantId);
+        const nextState = !item.is_available;
+        const { error: updateErr } = await supabase
+          .from('menu_items')
+          .update({ is_available: nextState })
+          .eq('id', menuItemId)
+          .eq('restaurant_id', tenantId);
 
-      if (updateErr) throw new Error(`Failed to update item: ${updateErr.message}`);
-      return nextState;
+        if (updateErr) throw updateErr;
+        markSupabaseHealthy();
+        return nextState;
+      } catch (err: any) {
+        markSupabaseUnavailable(err);
+        console.warn('[RestaurantService] Supabase toggleMenuItemAvailability failed, falling back to local SQLite:', err);
+      }
     }
 
     return await sqliteToggleMenuItemAvailability(tenantId, menuItemId);
