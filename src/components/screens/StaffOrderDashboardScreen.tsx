@@ -179,11 +179,11 @@ export const StaffOrderDashboardScreen: React.FC<Props> = ({
               onClick={() => setActiveTab('ready')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-xs shrink-0 transition-all cursor-pointer ${
                 activeTab === 'ready'
-                  ? 'bg-emerald-600 text-white'
+                  ? 'bg-orange-600 text-white'
                   : 'bg-white border border-[#E5E5E5] hover:bg-gray-50 text-[#525252]'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px] text-emerald-600">
+              <span className="material-symbols-outlined text-[18px] text-orange-600">
                 room_service
               </span>
               <span>Ready at Pass</span>
@@ -279,7 +279,7 @@ export const StaffOrderDashboardScreen: React.FC<Props> = ({
                     : isPreparing
                     ? 'border-amber-300'
                     : isReady
-                    ? 'border-emerald-300'
+                    ? 'border-orange-300'
                     : 'border-[#E5E5E5]'
                 }`}
               >
@@ -303,7 +303,7 @@ export const StaffOrderDashboardScreen: React.FC<Props> = ({
                     <span>Pay at End</span>
                   </div>
                 ) : isReady ? (
-                  <div className="bg-emerald-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold">
+                  <div className="bg-orange-600 px-4 py-1.5 flex items-center justify-between text-white text-xs font-bold">
                     <div className="flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px]">check_circle</span>
                       <span>Stage: Ready at Kitchen Pass</span>
@@ -345,7 +345,7 @@ export const StaffOrderDashboardScreen: React.FC<Props> = ({
 
                     {/* Payment Status Pill */}
                     {order.paymentVerified ? (
-                      <span className="bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      <span className="bg-orange-100 border border-orange-200 text-orange-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                         <span className="material-symbols-outlined text-[14px]">check</span>
                         <span>Paid ({order.paymentMethod || 'Card'})</span>
                       </span>
@@ -485,7 +485,7 @@ export const StaffOrderDashboardScreen: React.FC<Props> = ({
                             }`}
                             title="Collect cash at table"
                           >
-                            <span className="material-symbols-outlined text-[16px] text-emerald-600">
+                            <span className="material-symbols-outlined text-[16px] text-orange-600">
                               payments
                             </span>
                             <span className="text-[11px]">Cash</span>
@@ -525,14 +525,14 @@ export const StaffOrderDashboardScreen: React.FC<Props> = ({
                         </div>
                       </div>
                     ) : (
-                      <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between text-xs text-emerald-900 font-semibold">
+                      <div className="p-3 bg-orange-50 rounded-xl border border-orange-200 flex items-center justify-between text-xs text-orange-900 font-semibold">
                         <span className="flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-[18px] text-emerald-700">
+                          <span className="material-symbols-outlined text-[18px] text-orange-700">
                             verified
                           </span>
                           Settled via {order.paymentMethod || 'Card'} by Sarah K.
                         </span>
-                        <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded font-bold">
+                        <span className="text-[10px] bg-orange-200 text-orange-900 px-2 py-0.5 rounded font-bold">
                           Paid
                         </span>
                       </div>

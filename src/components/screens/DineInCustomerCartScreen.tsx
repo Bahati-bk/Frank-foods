@@ -165,7 +165,7 @@ export const DineInCustomerCartScreen: React.FC<Props> = ({
 
           {/* Dine-In Badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50/80 border border-orange-200 text-[#EA580C] text-xs font-bold uppercase tracking-wider">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
             <span>{tableNumber.toUpperCase()} • DINE-IN</span>
           </div>
         </header>

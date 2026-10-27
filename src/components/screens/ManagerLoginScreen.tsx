@@ -89,7 +89,7 @@ export const ManagerLoginScreen: React.FC<Props> = ({ onLoginSuccess, onSelectSc
                   }}
                 />
                 <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded text-xs font-medium flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span className="w-2 h-2 rounded-full bg-orange-400"></span>
                   <span>Multi-Restaurant Platform</span>
                 </div>
               </div>

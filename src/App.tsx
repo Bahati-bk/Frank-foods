@@ -81,6 +81,8 @@ export default function App() {
       return [];
     }
   });
+  const cartItemsRef = useRef(cartItems);
+  cartItemsRef.current = cartItems;
 
   const [customizingDish, setCustomizingDish] = useState<Dish | null>(null);
   const [isSubmittingOrder, setIsSubmittingOrder] = useState<boolean>(false);
@@ -189,7 +191,15 @@ export default function App() {
 
       if (activeTenantIdRef.current !== activeTenantId) return;
 
-      if (tenantDishes.length > 0) setDishes(tenantDishes);
+      if (tenantDishes.length > 0) {
+        setDishes(tenantDishes);
+        const menuDishIds = new Set(tenantDishes.map((dish) => dish.id));
+        const hasStaleCartItems = cartItemsRef.current.some((item) => !menuDishIds.has(item.dishId));
+        if (hasStaleCartItems) {
+          setCartItems((prev) => prev.filter((item) => menuDishIds.has(item.dishId)));
+          setErrorMessage('Your saved cart contained items from an older menu. They were removed; please add items from the refreshed menu.');
+        }
+      }
       if (tenantCategories.length > 0) setCategories(tenantCategories);
       if (tenantStaff.length > 0) setStaff(tenantStaff);
       if (tenantStats) setShiftStats(tenantStats);

@@ -95,8 +95,8 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
           {/* Dine-in badge with live indicator */}
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-semibold">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
             </span>
             <span>{order.tableNumber} • Live Status</span>
           </div>
@@ -117,7 +117,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                       Cancelled
                     </span>
                   ) : order.paymentVerified ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-orange-50 text-orange-700 border border-orange-200">
                       Paid ({order.paymentMethod || 'Card'})
                     </span>
                   ) : order.status === 'served' ? (
@@ -125,7 +125,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                       Served • Pay at End
                     </span>
                   ) : order.status === 'ready' ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 animate-pulse">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-orange-50 text-orange-700 border border-orange-200 animate-pulse">
                       Plated &amp; Ready at Pass
                     </span>
                   ) : order.status === 'confirmed' ? (
@@ -200,7 +200,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                 order.status === 'cancelled'
                   ? 'text-red-700 bg-red-50'
                   : currentStep === 4
-                  ? 'text-emerald-700 bg-emerald-50'
+                  ? 'text-orange-700 bg-orange-50'
                   : 'text-[#EA580C] bg-[#FFF7ED]'
               }`}>
                 {order.status === 'cancelled' ? 'Cancelled' : `Step ${currentStep} of 4`}
@@ -218,7 +218,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                     currentStep === 1
                       ? 'bg-[#F97316] text-white shadow-md ring-4 ring-orange-100 animate-pulse'
                       : currentStep > 1
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-orange-600 text-white'
                       : order.status === 'cancelled'
                       ? 'bg-red-100 text-red-500 border border-red-200'
                       : 'bg-neutral-100 border border-neutral-300 text-neutral-400'
@@ -257,7 +257,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                       </span>
                     )}
                     {currentStep > 1 && (
-                      <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[11px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
                         Done
                       </span>
                     )}
@@ -287,7 +287,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                     currentStep === 2
                       ? 'bg-[#F97316] text-white shadow-md ring-4 ring-orange-100 animate-pulse'
                       : currentStep > 2
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-neutral-100 border border-neutral-300 text-neutral-400'
                   }`}
                 >
@@ -309,12 +309,12 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                       2. Plated &amp; Ready at Pass
                     </p>
                     {currentStep === 2 && (
-                      <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 animate-pulse">
+                      <span className="text-[11px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded border border-orange-200 animate-pulse">
                         Ready for Delivery
                       </span>
                     )}
                     {currentStep > 2 && (
-                      <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[11px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
                         Done
                       </span>
                     )}
@@ -336,7 +336,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                     currentStep === 3
                       ? 'bg-[#F97316] text-white shadow-md ring-4 ring-orange-100 animate-pulse'
                       : currentStep > 3
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-neutral-100 border border-neutral-300 text-neutral-400'
                   }`}
                 >
@@ -363,7 +363,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                       </span>
                     )}
                     {currentStep > 3 && (
-                      <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[11px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
                         Served
                       </span>
                     )}
@@ -381,7 +381,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                 <div
                   className={`relative z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                     order.paymentVerified
-                      ? 'bg-emerald-600 text-white shadow-md ring-4 ring-emerald-100'
+                      ? 'bg-orange-600 text-white shadow-md ring-4 ring-orange-100'
                       : currentStep === 4
                       ? 'bg-[#F97316] text-white shadow-md ring-4 ring-orange-100'
                       : 'bg-neutral-100 border border-neutral-300 text-neutral-400'
@@ -396,14 +396,14 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                     <p
                       className={`text-sm ${
                         order.paymentVerified
-                          ? 'font-bold text-emerald-800'
+                          ? 'font-bold text-orange-800'
                           : 'font-semibold text-[#171717]'
                       }`}
                     >
                       4. Bill &amp; Payment (Pay at End)
                     </p>
                     {order.paymentVerified ? (
-                      <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[11px] font-semibold text-orange-700 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
                         Paid ({order.paymentMethod || 'Card'})
                       </span>
                     ) : (
@@ -508,7 +508,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-xs text-[#171717] flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-emerald-600">
+                        <span className="material-symbols-outlined text-[16px] text-orange-600">
                           payments
                         </span>
                         Cash UGX
@@ -607,8 +607,8 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
 
             {/* Confirmation Banner */}
             {serverAlerted && (
-              <div className="mt-3 text-center text-xs font-bold text-emerald-800 bg-emerald-50 py-2 px-3 rounded-xl border border-emerald-200 flex items-center justify-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-emerald-600">
+              <div className="mt-3 text-center text-xs font-bold text-orange-800 bg-orange-50 py-2 px-3 rounded-xl border border-orange-200 flex items-center justify-center gap-1.5">
+                <span className="material-symbols-outlined text-[16px] text-orange-600">
                   check_circle
                 </span>
                 <span>
@@ -686,7 +686,7 @@ export const CustomerOrderTrackerScreen: React.FC<Props> = ({
                       order.status === 'cancelled'
                         ? 'text-red-700'
                         : order.paymentVerified
-                        ? 'text-emerald-700'
+                        ? 'text-orange-700'
                         : 'text-amber-700'
                     }`}
                   >

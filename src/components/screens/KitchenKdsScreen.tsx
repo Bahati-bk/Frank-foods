@@ -147,7 +147,7 @@ export const KitchenKdsScreen: React.FC<Props> = ({
               title="Poll latest orders from shared database"
               className="px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-xs font-bold text-neutral-200 flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <span className="material-symbols-outlined text-[16px] text-emerald-400">sync</span>
+              <span className="material-symbols-outlined text-[16px] text-orange-400">sync</span>
               <span className="hidden sm:inline">Refresh</span>
             </button>
 
@@ -267,7 +267,7 @@ export const KitchenKdsScreen: React.FC<Props> = ({
             onClick={() => setActiveFilter('ready')}
             className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer transition-all ${
               activeFilter === 'ready'
-                ? 'bg-emerald-600 text-white shadow-md'
+                ? 'bg-orange-600 text-white shadow-md'
                 : 'bg-[#1C1C1E] border border-neutral-800 text-neutral-400 hover:text-white'
             }`}
           >
@@ -336,7 +336,7 @@ export const KitchenKdsScreen: React.FC<Props> = ({
             // Elapsed color coding: Green <10m, Amber 10-20m, Red >20m
             const timerColor =
               elapsed < 10
-                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
                 : elapsed < 20
                 ? 'bg-amber-500/20 text-amber-400 border-amber-500/30'
                 : 'bg-red-500/20 text-red-400 border-red-500/30 animate-pulse';
@@ -350,7 +350,7 @@ export const KitchenKdsScreen: React.FC<Props> = ({
                     : isCooking
                     ? 'border-orange-500/50'
                     : isReady
-                    ? 'border-emerald-500/50'
+                    ? 'border-orange-500/50'
                     : 'border-neutral-800'
                 }`}
               >
@@ -362,7 +362,7 @@ export const KitchenKdsScreen: React.FC<Props> = ({
                       : isCooking
                       ? 'bg-orange-950/30 border-orange-800/30'
                       : isReady
-                      ? 'bg-emerald-950/30 border-emerald-800/30'
+                      ? 'bg-orange-950/30 border-orange-800/30'
                       : 'bg-[#242426] border-neutral-800'
                   }`}
                 >
@@ -479,7 +479,7 @@ export const KitchenKdsScreen: React.FC<Props> = ({
                     {isCooking && (
                       <button
                         onClick={() => onUpdateOrderStatus(order.id, 'ready')}
-                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all"
+                        className="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-extrabold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all"
                       >
                         <span className="material-symbols-outlined text-[16px]">room_service</span>
                         <span>Ready at Pass</span>

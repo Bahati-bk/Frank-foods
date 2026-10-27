@@ -124,7 +124,7 @@ export function DatabaseManagerModal({ isOpen, onClose }: DatabaseManagerModalPr
             <div>
               <h2 className="text-base font-bold flex items-center gap-2">
                 Database & Tables Engine
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">
                   SQLite Active On-Device
                 </span>
               </h2>
@@ -305,7 +305,7 @@ export function DatabaseManagerModal({ isOpen, onClose }: DatabaseManagerModalPr
                   value={sqlQuery}
                   onChange={(e) => setSqlQuery(e.target.value)}
                   rows={4}
-                  className="w-full p-3 font-mono text-xs bg-neutral-900 text-emerald-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                  className="w-full p-3 font-mono text-xs bg-neutral-900 text-orange-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F97316]"
                   placeholder="SELECT * FROM orders;"
                 />
               </div>

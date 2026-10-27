@@ -378,7 +378,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
           >
             <span className="material-symbols-outlined text-[17px]">group</span>
             <span>Staff Accounts</span>
-            <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+            <span className="px-1.5 py-0.5 rounded-full bg-orange-100 text-orange-800 text-[10px] font-bold">
               {staff.length} Active
             </span>
           </button>
@@ -388,14 +388,14 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
       {/* Main Content Sections */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8">
         {saveFeedback && (
-          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between shadow-xs">
+          <div className="p-3.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-xs font-bold flex items-center justify-between shadow-xs">
             <span className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+              <span className="material-symbols-outlined text-[20px] text-orange-600">check_circle</span>
               {saveFeedback}
             </span>
             <button
               onClick={() => setSaveFeedback(null)}
-              className="text-emerald-700 hover:text-emerald-900"
+              className="text-orange-700 hover:text-orange-900"
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
             </button>
@@ -412,8 +412,8 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
                 Today's Shift Performance
               </h2>
               <div className="flex flex-wrap items-center gap-2 text-xs text-[#525252] mt-0.5">
-                <span className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="inline-flex items-center gap-1.5 text-orange-700 font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                   Shift active
                 </span>
                 <span>• 11:30 AM - Present (Acacia Mall)</span>
@@ -444,7 +444,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
                 <p className="text-2xl font-extrabold text-[#171717] tracking-tight tabular-nums">
                   {formatUGX(shiftStats.estimatedSalesUGX)}
                 </p>
-                <p className="text-xs font-semibold text-emerald-700 mt-1 flex items-center gap-1">
+                <p className="text-xs font-semibold text-orange-700 mt-1 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[14px]">arrow_upward</span>
                   Healthy lunch run
                 </p>
@@ -582,7 +582,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
               <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E5]">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-[#737373]">Catalog items:</span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                  <span className="px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 text-xs font-bold border border-orange-200">
                     {availableCount} Available
                   </span>
                   {soldOutCount > 0 && (
@@ -645,7 +645,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
                         <div className="flex items-center gap-2">
                           <span
                             className={`text-xs font-bold ${
-                              isPaused ? 'text-red-600' : 'text-emerald-700'
+                              isPaused ? 'text-red-600' : 'text-orange-700'
                             }`}
                           >
                             {isPaused ? 'Paused' : 'Available'}
@@ -654,7 +654,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
                             type="button"
                             onClick={() => onToggleDishStock(dish.id)}
                             className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-                              isPaused ? 'bg-neutral-300' : 'bg-emerald-600'
+                              isPaused ? 'bg-neutral-300' : 'bg-orange-600'
                             }`}
                           >
                             <div
@@ -987,8 +987,8 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
                 <span className="material-symbols-outlined text-[16px]">person_add</span>
                 <span>Invite Staff Member</span>
               </button>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-orange-800 text-xs font-bold border border-orange-200">
+                <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                 {staff.length} Accounts Active
               </span>
             </div>
@@ -1015,7 +1015,7 @@ export const ManagerAdminDashboardScreen: React.FC<Props> = ({
                   </div>
                 </div>
 
-                <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                <span className="px-2.5 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-bold border border-orange-200">
                   Active
                 </span>
               </div>

@@ -105,7 +105,7 @@ export const DineInMenuFeedScreen: React.FC<Props> = ({
                 <span>{restaurantName}</span>
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-[#525252] mt-0.5 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
                 <span>{branchLocation}</span>
               </div>
             </div>
@@ -161,12 +161,12 @@ export const DineInMenuFeedScreen: React.FC<Props> = ({
           </div>
         )}
         {qrToken && !qrTokenError && (
-          <div className="mx-4 mt-3 py-1.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
+          <div className="mx-4 mt-3 py-1.5 px-3 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-xs flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-emerald-600">verified</span>
+              <span className="material-symbols-outlined text-[16px] text-orange-600">verified</span>
               <span className="font-bold text-[11px]">QR Table Verified: {tableNumber}</span>
             </div>
-            <span className="text-[10px] font-mono text-emerald-600">Token Active</span>
+            <span className="text-[10px] font-mono text-orange-600">Token Active</span>
           </div>
         )}
 
@@ -309,11 +309,11 @@ export const DineInMenuFeedScreen: React.FC<Props> = ({
                         <div className="flex items-center gap-1 text-[10px] font-bold">
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
-                              isAvailable ? 'bg-emerald-500' : 'bg-red-500'
+                              isAvailable ? 'bg-orange-500' : 'bg-red-500'
                             }`}
                           ></span>
                           <span
-                            className={isAvailable ? 'text-emerald-700' : 'text-red-600'}
+                            className={isAvailable ? 'text-orange-700' : 'text-red-600'}
                           >
                             {isAvailable ? 'AVAILABLE' : 'CURRENTLY UNAVAILABLE'}
                           </span>
@@ -328,7 +328,7 @@ export const DineInMenuFeedScreen: React.FC<Props> = ({
                         <button
                           onClick={(e) => handleAddClick(e, dish)}
                           className={`px-3 py-1.5 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-xs font-bold flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer ${
-                            addedAnimationId === dish.id ? 'bg-emerald-600' : ''
+                            addedAnimationId === dish.id ? 'bg-orange-600' : ''
                           }`}
                         >
                           {addedAnimationId === dish.id ? (
